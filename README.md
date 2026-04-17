@@ -11,7 +11,7 @@ a mini polymarket for HTL krems
 
 Start seite 
 
- 
+Einzelansicht (Wettansicht)
 
 Sign Up / Login Fenster 
 
@@ -21,7 +21,7 @@ Admin Fenster: Erstellen / Wetten auflösen Fenster
 ## LOGIK
   
 
-Coins würde ich recht gerne machen 😊 (Artorius, muss aber echt nicht sein lol) 
+Coins: (1 Aufgabe)
 
 LOGIK: Coin System, Daily Free Coins, MYSQL gespecheiert 
 
@@ -30,6 +30,7 @@ LOGIK: Wetten, Coins Setzten, aus dem wallet raus
 LOGIK: prediction auszahlung, gewinn berechnen, coins rausnhemen und speichern im acc 
 
  
+Wette: (1 Aufgabe)
 
 LOGIK: neue Wette erstellen 
 
@@ -39,13 +40,17 @@ LOGIK: wetten Ablaufs Datum
 
 LOGIK: wiederkehrende Wetten 
 
-## User Management
 
-User Verwaltung:  
+## User Management 
+
+User Verwaltung:  (1ne große Aufgabe)
 
 Rollen: Admin (User verwaltungs Fenster, controlle über user), Thrusted: Darf erstellen und auflösen 
 
-Microsoft Login : Azure AD: ?! 
+
+
+
+Microsoft Login : Azure AD: ?! (1ne Aufgabe)
 
  
 
@@ -115,3 +120,22 @@ Paket 6: Real-Time Communication Hub (SignalR)
     Details: Ein SignalR-Hub, der jedes Mal, wenn eine Wette platziert wird, die neuen Quoten an alle verbundenen Clients pusht.
 
     Ziel: Das "Live-Gefühl". Wenn Artorius 1000 Coins setzt, sieht Jakob sofort den Balken im Frontend wandern.
+
+
+
+
+
+
+
+
+
+## WICHTIG UMSETZUNG
+
+Mergen:
+    Experimental: (zum ersten Mergen und Testen)
+    Main: nur bei Absprache Mergen.
+
+Commit:
+    Vorgefertigt:
+
+    
