@@ -11,7 +11,7 @@ a mini polymarket for HTL krems
 
 Start seite 
 
- 
+Einzelansicht (Wettansicht)
 
 Sign Up / Login Fenster 
 
