@@ -67,59 +67,59 @@ Ideen:
 
 ## Arbeitspakete (Blöcke):
 
-🏗️ Block A: Infrastruktur & Sicherheit
+👤 Bereich A: Auth & Infrastructure (z. B. Robin)
 
-Paket 1: Identity & Auth Service (Azure AD)
+AP 1: Authentication & User Management (OAuth2)
 
-    Aufgabe: Integration des Microsoft-Logins (OpenID Connect).
+    Technik: FastAPI/Flask mit MSAL Python (Microsoft Authentication Library).
 
-    Details: Token-Validierung implementieren, User beim ersten Login in der eigenen MySQL-DB anlegen.
+    Details: Integration des Microsoft Logins. Wenn der User zurückkommt, prüfst du die @htlkrems.at Domain.
 
-    Ziel: Ein UserService, der dem Rest der App sagt, wer gerade eingeloggt ist und welche Rolle (Admin, Trusted, User) er hat.
+    Aufgabe: User-Profil in der DB anlegen/laden und ein JWT (JSON Web Token) für das Frontend generieren, damit Jakob weiß, wer eingeloggt ist.
 
-Paket 2: Database Access Layer (DAL) & Logging
+AP 2: Database Layer & Logging (ORM)
 
-    Aufgabe: Das Grundgerüst der Datenbank und der Zugriff darauf.
+    Technik: SQLAlchemy oder SQLModel.
 
-    Details: Entity Framework Core (oder Dapper) Setup. Erstellen der Repositories für Users, Bets und Markets.
+    Details: Erstellen der Tabellen-Modelle (User, Bet, Prediction).
 
-    Ziel: Ein zentrales AuditLog, das jede Kontobewegung mitschreibt (Sicherheit gegen Manipulation).
+    Aufgabe: Einen zentralen Logger bauen, der jede Wett-Aktion speichert. Das ist eure "Versicherung", falls jemand behauptet, seine Coins seien verschwunden.
 
-💰 Block B: Die "Money" Logik (Das Herzstück)
+🧮 Bereich B: Business Logic & Mathe (z. B. Artorius)
 
-Paket 3: Wallet & Coin Engine
+AP 3: Coin & Wallet Engine
 
-    Aufgabe: Verwaltung der Kontostände.
+    Technik: Python-Logik mit DB-Transactions.
 
-    Details: Funktionen für AddCoins, SubtractCoins und den DailyClaim.
+    Details: Endpoints für GET /balance und POST /claim-daily.
 
-    Wichtig: Implementierung von Datenbank-Transaktionen, damit bei einem Server-Fehler während einer Wette keine Coins "verpuffen".
+    Wichtig: Eine "Atomic Update" Funktion schreiben. Wenn ein User eine Wette platziert, muss in einer Transaktion geprüft werden: Guthaben >= Einsatz -> Abzug Guthaben -> Eintrag Wette.
 
-Paket 4: Prediction & Calculation Engine
+AP 4: Prediction & Payout Logic
 
-    Aufgabe: Die Mathematik hinter den Wetten.
+    Technik: Python Math / NumPy.
 
-    Details: Logik zur Berechnung der aktuellen Quoten basierend auf dem Gesamt-Pool. Formel zur Gewinnverteilung (Totalisator-Prinzip) entwickeln, wenn eine Wette aufgelöst wird.
+    Details: Die Kern-Logik: Wie verändern sich die Quoten (Odds), wenn X Coins auf "Ja" gesetzt werden?
 
-    Ziel: Ein Service, der nach Abschluss einer Wette automatisch die Gewinne an alle Sieger ausschüttet.
+    Aufgabe: Die Auszahlungsfunktion. Wenn ein Admin die Wette auf "Ja" setzt, muss das Skript berechnen: Gewinn=Pool der GewinnerGesamtpool​×Einsatz.
 
-🎮 Block C: Markt-Management & Real-Time
+🌐 Bereich C: API & Real-Time (z. B. Leo)
 
-Paket 5: Market Life-Cycle Management
+AP 5: Market & Admin API
 
-    Aufgabe: Erstellung und Ablaufsteuerung von Wetten.
+    Technik: REST API Endpoints.
 
-    Details: CRUD-Funktionen für Wetten. Logik für das Ablaufdatum (Check: "Ist die Wette noch offen?").
+    Details: Alles, was Jakob im Frontend anzeigen muss. GET /markets/active, POST /markets/create (nur für Admins/Trusted).
 
-    Feature: System für wiederkehrende Wetten (z.B. ein Background-Task, der jeden Montag die "Leberkas-Wette" neu klont).
+    Aufgabe: Validierung der Inputs (z.B. verhindern, dass ein Enddatum in der Vergangenheit liegt).
 
-Paket 6: Real-Time Communication Hub (SignalR)
+AP 6: Real-Time Updates (WebSockets)
 
-    Aufgabe: Live-Updates ohne Browser-Refresh.
+    Technik: Flask-SocketIO oder FastAPI WebSockets.
 
-    Details: Ein SignalR-Hub, der jedes Mal, wenn eine Wette platziert wird, die neuen Quoten an alle verbundenen Clients pusht.
+    Details: Sobald Artorius' Logik eine Wette verarbeitet hat, musst du ein Event an alle Clients "broadcasten".
 
-    Ziel: Das "Live-Gefühl". Wenn Artorius 1000 Coins setzt, sieht Jakob sofort den Balken im Frontend wandern.
+    Ziel: Jakobs Frontend bekommt sofort ein Signal {"type": "update", "market_id": 1, "new_odds": 0.75} und kann die Anzeige live ändern, ohne dass die Seite neu geladen wird.
 
 
 
