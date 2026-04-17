@@ -64,3 +64,22 @@ Ideen:
 (wett log) 
 
 (leader Board) 
+
+
+
+
+
+
+
+
+
+## WICHTIG UMSETZUNG
+
+Mergen:
+    Experimental: (zum ersten Mergen und Testen)
+    Main: nur bei Absprache Mergen.
+
+Commit:
+    Vorgefertigt:
+
+    
