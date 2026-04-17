@@ -21,7 +21,7 @@ Admin Fenster: Erstellen / Wetten auflösen Fenster
 ## LOGIK
   
 
-Coins würde ich recht gerne machen 😊 (Artorius, muss aber echt nicht sein lol) 
+Coins: (1 Aufgabe)
 
 LOGIK: Coin System, Daily Free Coins, MYSQL gespecheiert 
 
@@ -30,6 +30,7 @@ LOGIK: Wetten, Coins Setzten, aus dem wallet raus
 LOGIK: prediction auszahlung, gewinn berechnen, coins rausnhemen und speichern im acc 
 
  
+Wette: (1 Aufgabe)
 
 LOGIK: neue Wette erstellen 
 
@@ -39,13 +40,17 @@ LOGIK: wetten Ablaufs Datum
 
 LOGIK: wiederkehrende Wetten 
 
-## User Management
 
-User Verwaltung:  
+## User Management 
+
+User Verwaltung:  (1ne große Aufgabe)
 
 Rollen: Admin (User verwaltungs Fenster, controlle über user), Thrusted: Darf erstellen und auflösen 
 
-Microsoft Login : Azure AD: ?! 
+
+
+
+Microsoft Login : Azure AD: ?! (1ne Aufgabe)
 
  
 
