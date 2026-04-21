@@ -67,7 +67,7 @@ Ideen:
 
 ## Arbeitspakete (Blöcke):
 
-👤 Bereich A: Auth & Infrastructure (z. B. Robin)
+👤 Bereich A: Auth & Infrastructure
 
 AP 1: Authentication & User Management (OAuth2)
 
@@ -85,7 +85,7 @@ AP 2: Database Layer & Logging (ORM)
 
     Aufgabe: Einen zentralen Logger bauen, der jede Wett-Aktion speichert. Das ist eure "Versicherung", falls jemand behauptet, seine Coins seien verschwunden.
 
-🧮 Bereich B: Business Logic & Mathe (z. B. Artorius)
+🧮 Bereich B: Business Logic & Mathe
 
 AP 3: Coin & Wallet Engine
 
@@ -103,7 +103,7 @@ AP 4: Prediction & Payout Logic
 
     Aufgabe: Die Auszahlungsfunktion. Wenn ein Admin die Wette auf "Ja" setzt, muss das Skript berechnen: Gewinn=Pool der GewinnerGesamtpool​×Einsatz.
 
-🌐 Bereich C: API & Real-Time (z. B. Leo)
+🌐 Bereich C: API & Real-Time
 
 AP 5: Market & Admin API
 
@@ -141,3 +141,14 @@ Commit:
     THEMA/NUMMERIERUNG
 
     BERREICH/Thema/1.1
+
+
+## Projektauftrag
+
+.) Präsentation 15.06.2026
+.) Abgabe 07.06.2026
+
+.) Wochenbericht (Projektleiter)
+.) Projekttagebuch (Einzelperson)
+
+.) Projektorganisation
