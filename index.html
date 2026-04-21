@@ -4,8 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!--Links zu Bootstrap JS und CSS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!--Links zu eigenen JS und CSS Dateien-->
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
 </head>
 <body>
-    <h1>Hello World</h1>
+
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <div class="container-fluid" style="color: white;">
+            <a class="navbar-brand" href="#" style="color: white;">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!--Suchleiste-->
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-md-5">
+                        <form>
+                            <div class="form-group">
+                                <label for="search">Search:</label>
+                                <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            
+                
+            <div class="collapse navbar-collapse" id="navbarNav"> 
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Aktuell</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--Login und Admin Button-->
+            
+                <div class="row">
+                    <div class="col-md-5">
+                        <button type="button" class="btn btn-primary">Login</button>
+                    </div>
+                    <br>
+                    <div class="col-md-5">
+                        <button type="button" class="btn btn-secondary">Admin</button>
+                    </div>
+                </div>
+    </nav>
+    
+    
 </body>
 </html>

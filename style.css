@@ -1,0 +1,18 @@
+body {
+    background-color: grey;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: solid;
+}
+.nav-link:hover {
+    color: beige;
+    text-decoration: solid;
+    transform: scale(1.1);
+}
+
+.navbar-toggler {
+    border: none;
+    background-color: white;
+}
