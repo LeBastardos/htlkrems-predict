@@ -143,3 +143,14 @@ Commit:
     THEMA/NUMMERIERUNG
 
     BERREICH/Thema/1.1
+
+
+## Projektauftrag
+
+.) Präsentation 15.06.2026
+.) Abgabe 07.06.2026
+
+.) Wochenbericht (Projektleiter)
+.) Projekttagebuch (Einzelperson)
+
+.) Projektorganisation
