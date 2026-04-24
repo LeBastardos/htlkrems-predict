@@ -67,7 +67,7 @@ Ideen:
 
 ## Arbeitspakete (Blöcke):
 
-👤 Bereich A: Auth & Infrastructure
+👤 Bereich A: Auth & Infrastructure - Robin
 
 AP 1: Authentication & User Management (OAuth2)
 
@@ -86,7 +86,7 @@ AP 2: Database Layer & Logging (ORM)
     Optional: Einen zentralen Logger bauen, der jede Wett-Aktion speichert. Das ist eure "Versicherung", falls jemand behauptet, seine Coins seien verschwunden.
 
 
-🧮 Bereich B: Business Logic & Mathe
+🧮 Bereich B: Business Logic & Mathe - Artorius
 
 AP 3: Coin & Wallet Engine (DB Seitig)
 
@@ -96,6 +96,13 @@ AP 3: Coin & Wallet Engine (DB Seitig)
 
     Wichtig: Eine "Atomic Update" Funktion schreiben. Wenn ein User eine Wette platziert, muss in einer Transaktion geprüft werden: Guthaben >= Einsatz -> Abzug Guthaben -> Eintrag Wette.
 
+## Wenn AP 3 fertig, Zu AP 4 Wechseln
+
+
+🌐 Bereich C: API & Real-Time - Leonhard
+
+## Mit Atorius zusammensprechen, wenn er zu AP 4 wechselt, dann zu AP 5 wechseln
+
 AP 4: Prediction & Payout Logic
 
     Technik: Python Math / NumPy.
@@ -103,9 +110,6 @@ AP 4: Prediction & Payout Logic
     Details: Die Kern-Logik: Wie verändern sich die Quoten (Odds), wenn X Coins auf "Ja" gesetzt werden?
 
     Aufgabe: Die Auszahlungsfunktion. Wenn ein Admin die Wette auf "Ja" setzt, muss das Skript berechnen: Gewinn=Pool der GewinnerGesamtpool​×Einsatz.
-
-
-🌐 Bereich C: API & Real-Time
 
 AP 5: Market & Admin API
 
