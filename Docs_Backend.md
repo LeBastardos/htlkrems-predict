@@ -1,6 +1,6 @@
 # Projektstruktur:
 
-htl-predict/
+backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                 # FastAPI Startpunkt & App-Konfiguration
@@ -32,8 +32,6 @@ htl-predict/
 ├── docker-compose.yml          # Docker Setup (MySQL & Backend)
 ├── init.sql                    # Datenbank Initialisierung
 ├── requirements.txt            # Python Libraries
-└── README.md                   # Readme
-└── Docs.md                     # Projektstruktur & Endpoints
 └── .env                        # Secrets (MS Client ID, DB Passwords)
 └── .env.example                # Template for .env
 
