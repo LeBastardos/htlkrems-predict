@@ -28,6 +28,7 @@ backend/
 │       ├── bet.py
 │       └── prediction.py
 ├── tests/                      # Test-Skripte
+
 ├── logs/                       # Zentrales Logging Verzeichnis
 ├── docker-compose.yml          # Docker Setup (MySQL & Backend)
 ├── init.sql                    # Datenbank Initialisierung
