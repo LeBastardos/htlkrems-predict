@@ -43,6 +43,5 @@ async def delete_market(market_id: int, delete_info: MarketDelete):
     DELETE /admin/markets/{market_id}
     Löscht einen Markt mit Angabe eines Grundes.
     """
-    if not delete_info.confirm_delete:
-        raise HTTPException(status_code=400, detail="Löschen nicht bestätigt")
-    return await market_service.delete_market_entry(market_id, delete_info.reason)
+    await market_service.delete_market(market_id, delete_info)
+    return {"message": f"Markt {market_id} wurde gelöscht."}
