@@ -27,6 +27,7 @@ backend/
 │       ├── user.py
 │       ├── bet.py
 │       └── prediction.py
+│       └── market.py
 ├── tests/                      # Test-Skripte
 
 ├── logs/                       # Zentrales Logging Verzeichnis
