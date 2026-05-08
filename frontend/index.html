@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Mode Button -->
+            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
+                Light Mode
+            </button>
+
+            <!--Suchleiste-->
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-md-5">
+                        <form>
+                            <div class="form-group">
+                                <label for="search">Search:</label>
+                                <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav"> 
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Aktuell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--Login/Admin-->
+        <div class="row">
+            <div class="col-md-5">
+                <button type="button" class="btn btn-primary">Login</button>
+            </div>
+            <div class="col-md-5">
+                <button type="button" class="btn btn-secondary">Admin</button>
+            </div>
+        </div>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

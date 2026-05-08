@@ -1,0 +1,11 @@
+body {
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    transform: scale(1.1);
+}
+
+.navbar-toggler {
+    border: none;
+}
