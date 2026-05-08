@@ -67,7 +67,7 @@ Ideen:
 
 ## Arbeitspakete (Blöcke):
 
-👤 Bereich A: Auth & Infrastructure
+👤 Bereich A: Auth & Infrastructure - Robin
 
 AP 1: Authentication & User Management (OAuth2)
 
@@ -79,21 +79,29 @@ AP 1: Authentication & User Management (OAuth2)
 
 AP 2: Database Layer & Logging (ORM)
 
-    Technik: SQLAlchemy oder SQLModel.
+    Technik: MySQL
 
     Details: Erstellen der Tabellen-Modelle (User, Bet, Prediction).
 
-    Aufgabe: Einen zentralen Logger bauen, der jede Wett-Aktion speichert. Das ist eure "Versicherung", falls jemand behauptet, seine Coins seien verschwunden.
+    Optional: Einen zentralen Logger bauen, der jede Wett-Aktion speichert. Das ist eure "Versicherung", falls jemand behauptet, seine Coins seien verschwunden.
 
-🧮 Bereich B: Business Logic & Mathe
 
-AP 3: Coin & Wallet Engine
+🧮 Bereich B: Business Logic & Mathe - Artorius
+
+AP 3: Coin & Wallet Engine (DB Seitig)
 
     Technik: Python-Logik mit DB-Transactions.
 
     Details: Endpoints für GET /balance und POST /claim-daily.
 
     Wichtig: Eine "Atomic Update" Funktion schreiben. Wenn ein User eine Wette platziert, muss in einer Transaktion geprüft werden: Guthaben >= Einsatz -> Abzug Guthaben -> Eintrag Wette.
+
+## Wenn AP 3 fertig, Zu AP 4 Wechseln
+
+
+🌐 Bereich C: API & Real-Time - Leonhard
+
+## Mit Atorius zusammensprechen, wenn er zu AP 4 wechselt, dann zu AP 5 wechseln
 
 AP 4: Prediction & Payout Logic
 
@@ -103,23 +111,21 @@ AP 4: Prediction & Payout Logic
 
     Aufgabe: Die Auszahlungsfunktion. Wenn ein Admin die Wette auf "Ja" setzt, muss das Skript berechnen: Gewinn=Pool der GewinnerGesamtpool​×Einsatz.
 
-🌐 Bereich C: API & Real-Time
-
 AP 5: Market & Admin API
 
     Technik: REST API Endpoints.
 
-    Details: Alles, was Jakob im Frontend anzeigen muss. GET /markets/active, POST /markets/create (nur für Admins/Trusted).
+    Details: Alles, was im Frontend angezeigt werden muss. GET /markets/active, POST /markets/create (nur für Admins/Trusted).
 
     Aufgabe: Validierung der Inputs (z.B. verhindern, dass ein Enddatum in der Vergangenheit liegt).
 
-AP 6: Real-Time Updates (WebSockets)
+AP 6 (Optional): Real-Time Updates (WebSockets)
 
     Technik: Flask-SocketIO oder FastAPI WebSockets.
 
-    Details: Sobald Artorius' Logik eine Wette verarbeitet hat, musst du ein Event an alle Clients "broadcasten".
+    Details: Sobald die Logik eine Wette verarbeitet hat, musst du ein Event an alle Clients "broadcasten".
 
-    Ziel: Jakobs Frontend bekommt sofort ein Signal {"type": "update", "market_id": 1, "new_odds": 0.75} und kann die Anzeige live ändern, ohne dass die Seite neu geladen wird.
+    Ziel: Das Frontend bekommt sofort ein Signal {"type": "update", "market_id": 1, "new_odds": 0.75} und kann die Anzeige live ändern, ohne dass die Seite neu geladen wird.
 
 
 
