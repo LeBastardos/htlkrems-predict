@@ -13,7 +13,6 @@
 </head>
 
 <body>
-
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -26,6 +25,7 @@
             <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
                 Light Mode
             </button>
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
             <!--Suchleiste-->
             <div class="container mt-3">
@@ -48,15 +48,22 @@
                     <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                 </ul>
             </div>
+        </div>
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
-            <!--Login/Signup-->
-            <div class="auth-buttons">
+        <!--Login/Signup-->
+        <div class="row">
+            <div class="col-md-5">
                 <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
+            </div>
+            <div class="col-md-5">
                 <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
             </div>
         </div>
     </nav>
-<!-- Login Modal -->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<!-- Login Modal Logik -->
     <div class="auth-modal" id="loginModal">
         <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
             <div class="auth-modal-header">
@@ -82,7 +89,9 @@
             </div>
         </form>
     </div>
-<!-- Signup Modal -->
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<!-- Signup Modal Logik -->
     <div class="auth-modal" id="signupModal">
         <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
             <div class="auth-modal-header">
@@ -111,7 +120,7 @@
             </div>
         </form>
     </div>
-
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
     <br>
 
     <!-- Slideshow container -->
