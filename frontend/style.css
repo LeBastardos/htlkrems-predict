@@ -1,5 +1,14 @@
+html,
+body {
+    overflow-x: hidden;
+}
+
 body {
     transition: 0.3s;
+}
+
+.navbar .container-fluid {
+  gap: 12px;
 }
 
 .nav-link:hover {
@@ -14,6 +23,26 @@ body {
   display: flex;
   gap: 8px;
   padding-right: 12px;
+}
+
+#navbarNav {
+  flex-grow: 0;
+  margin-left: auto;
+}
+
+.navbar-search {
+  flex: 0 1 320px;
+}
+
+.navbar-search form {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.navbar-search .form-control {
+  min-width: 0;
 }
 
 .auth-modal {

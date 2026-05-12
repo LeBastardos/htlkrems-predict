@@ -28,17 +28,11 @@
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
             <!--Suchleiste-->
-            <div class="container mt-3">
-                <div class="row">
-                    <div class="col-md-5">
-                        <form>
-                            <div class="form-group">
-                                <label for="search">Search:</label>
-                                <input type="text" class="form-control" id="search" placeholder="Enter search term">
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="navbar-search">
+                <form>
+                    <label for="search">Search:</label>
+                    <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                </form>
             </div>
 
             <div class="collapse navbar-collapse" id="navbarNav"> 
@@ -48,15 +42,10 @@
                     <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                 </ul>
             </div>
-        </div>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
-        <!--Login/Signup-->
-        <div class="row">
-            <div class="col-md-5">
+            <!--Login/Signup-->
+            <div class="auth-buttons">
                 <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
-            </div>
-            <div class="col-md-5">
                 <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
             </div>
         </div>
