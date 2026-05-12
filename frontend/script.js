@@ -16,6 +16,40 @@ button.addEventListener("click", () => {
     }
 });
 
+const loginModal = document.getElementById("loginModal");
+const signupModal = document.getElementById("signupModal");
+const openLoginModalButton = document.getElementById("openLoginModal");
+const openSignupModalButton = document.getElementById("openSignupModal");
+
+function openModal(modal) {
+  modal.classList.add("is-open");
+}
+
+function closeModal(modal) {
+  modal.classList.remove("is-open");
+}
+
+openLoginModalButton.addEventListener("click", () => {
+  openModal(loginModal);
+});
+
+openSignupModalButton.addEventListener("click", () => {
+  openModal(signupModal);
+});
+
+document.querySelectorAll("[data-close-modal]").forEach((closeButton) => {
+  closeButton.addEventListener("click", () => {
+    const modal = document.getElementById(closeButton.dataset.closeModal);
+    closeModal(modal);
+  });
+});
+
+window.addEventListener("click", (event) => {
+  if (event.target.classList.contains("auth-modal")) {
+    closeModal(event.target);
+  }
+});
+
 // Slideshow 
 let slideIndex = 1;
 showSlides(slideIndex);
