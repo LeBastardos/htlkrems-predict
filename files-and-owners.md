@@ -14,6 +14,7 @@ backend/
 │   │   ├── session.py          (Datenbank-Verbindung)
 │   │   ├── models.py           (SQLAlchemy Tabellen)
 │   │   └── base.py             (Migrations-Sammelpunkt)
+│   │   └── db_service.py       (Funktionen für den rest des Backends (z.B. getUser()))
 │   │
 │   ├── services/               >> ARTORIUS & LEONHARD
 │   │   ├── wallet.py           >> Artorius (Bereich B: Coin-Logik)
@@ -32,6 +33,7 @@ backend/
 │       ├── user.py             >> Robin
 │       ├── bet.py              >> Artorius
 │       └── prediction.py       >> Artorius
+│       └── market.py           >> Leo
 │
 ├── tests/                      >> Alle (Jeder testet seinen Bereich)
 ├── logs/                       >> System
