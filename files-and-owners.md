@@ -27,7 +27,9 @@ backend/
 │   │   └── endpoints/
 │   │       ├── auth.py         >> Robin (Login Logik)
 │   │       ├── users.py        >> Robin (Profil Logik)
-│   │       └── markets.py      >> Leonhard & Artorius (Wetten & Märkte)
+│   │       ├── markets.py      >> Leonhard & Artorius (Wetten & Märkte)
+│   │       ├── wette.py        >> Artorius (Platzieren von Wetten)
+│   │       └── wallet.py       >> Artorius (Balance & Transaktionen)
 │   │
 │   └── schemas/                >> ALLE (Datenvalidierung)
 │       ├── user.py             >> Robin
