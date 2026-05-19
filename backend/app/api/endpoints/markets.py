@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from typing import List
 from app.schemas.market import MarketCreate, MarketRead, MarketDelete, MarketResolve, MarketHistory
-from app.services.market_service import market_service
+import app.services.market_service as market_service
 
 router = APIRouter()
 
@@ -43,5 +43,5 @@ async def delete_market(market_id: int, delete_info: MarketDelete):
     DELETE /admin/markets/{market_id}
     Löscht einen Markt mit Angabe eines Grundes.
     """
-    await market_service.delete_market(market_id, delete_info)
+    await market_service.delete_market(market_id, delete_info.reason)
     return {"message": f"Markt {market_id} wurde gelöscht."}

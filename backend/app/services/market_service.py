@@ -1,31 +1,54 @@
-# backend/app/services/market_service.py
-from app.schemas.market import MarketCreate, MarketResolve
-from datetime import datetime
-import app.db.db_service as db_service
+"""Service layer for market-related operations.
 
-# Diese Funktionen füllt Artorius
+The functions are intentionally lightweight placeholders for now, but their
+names and signatures are aligned with the FastAPI endpoints.
+"""
+
+from datetime import datetime
+
+from app.schemas.market import Market, MarketCreate, MarketResolve
+
 
 async def get_all_active_markets():
-    """Hol hier die Märkte von Robin."""
-    # Vorläufiger Dummy für Jakob (Frontend)
+    """Return all markets that are currently open."""
     return []
 
+
 async def create_new_market(market_data: MarketCreate):
-    """Speichere den neuen Markt in der DB."""
-    # Hier wird später das DB-Modell erstellt
-    return {**market_data.dict(), "id": 1, "status": "OPEN", "current_pool": 0, "odds_yes": 0.5, "odds_no": 0.5, "created_at": datetime.now()}
+    """Create a new market and return the serialized result."""
+    return Market(
+        title=market_data.title,
+        description=market_data.description,
+        end_date=market_data.end_date,
+        initial_odds_yes=market_data.initial_odds_yes,
+        initial_odds_no=market_data.initial_odds_no,
+        id=1,
+        status="OPEN",
+        current_pool=0.0,
+        odds_yes=market_data.initial_odds_yes,
+        odds_no=market_data.initial_odds_no,
+        created_at=datetime.now(),
+    )
+
 
 async def get_odds_history(market_id: int):
-    """Ziehe die historischen Quoten aus der History-Tabelle."""
+    """Return the historical odds for a market."""
     return {"market_id": market_id, "history": []}
 
+
 async def process_market_payout(market_id: int, resolve_data: MarketResolve):
-    """Hier kommt deine Kern-Logik aus AP 4 rein (Gewinnerpool / Gesamtpool)."""
-    # 1. Gewinner ermitteln
-    # 2. Payouts berechnen
-    # 3. Wallet-Updates triggern
-    return {"message": "Payout logic not implemented yet"}
+    """Resolve a market and calculate payouts."""
+    return {"message": "Payout logic not implemented yet", "market_id": market_id, "outcome": resolve_data.outcome}
+
 
 async def delete_market_entry(market_id: int, reason: str):
-    """Lösche den Markt nur, wenn noch keine Wetten existieren."""
-    return {"status": "success", "reason": reason}
+    """Delete a market if it is still eligible for deletion."""
+    return {"status": "success", "market_id": market_id, "reason": reason}
+
+
+# Backward-compatible aliases for endpoint naming.
+get_active_markets = get_all_active_markets
+create_market = create_new_market
+get_market_history = get_odds_history
+resolve_market = process_market_payout
+delete_market = delete_market_entry
