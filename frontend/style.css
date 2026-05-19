@@ -190,28 +190,34 @@ body {
   border-radius: 10px;
   margin: 24px auto;
   max-width: 1100px;
-  padding: 18px;
+  padding: 26px 18px 0;
+  position: relative;
   width: calc(100% - 32px);
 }
 
 /* Slideshow container */
 .slideshow-container {
-  border: 2px solid var(--bs-border-color);
-  border-radius: 10px;
-  max-width: 520px;
-  min-height: 190px;
-  overflow: hidden;
+  margin: 0;
+  min-height: 300px;
   position: relative;
-  margin: 0 auto;
 }
 
 .mySlides {
   display: none;
 }
 
-.mySlides img {
+.slide-image {
+  border: 2px solid var(--bs-border-color);
+  border-radius: 10px;
+  margin: 0 auto;
+  max-width: 520px;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.slide-image img {
   display: block;
-  height: 190px;
+  height: 150px;
   object-fit: contain;
   width: 100%;
 }
@@ -220,11 +226,11 @@ body {
 .prev, .next {
   cursor: pointer;
   position: absolute;
-  top: 50%;
+  top: 38%;
   width: auto;
   margin-top: -22px;
   padding: 16px;
-  color: white;
+  color: var(--bs-body-color);
   font-weight: bold;
   font-size: 18px;
   transition: 0.6s ease;
@@ -232,9 +238,13 @@ body {
   user-select: none;
 }
 
+.prev {
+  left: 56px;
+}
+
 /* Position the "next button" to the right */
 .next {
-  right: 0;
+  right: 56px;
   border-radius: 3px 0 0 3px;
 }
 
@@ -259,10 +269,29 @@ body {
   text-align: center;
 }
 
-.graph-title {
-  font-size: clamp(32px, 6vw, 64px);
+.graph-vote-row {
+  align-items: end;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 18px;
+  margin: -4px 0 8px;
+}
+
+.graph-vote-row span {
+  font-size: clamp(28px, 5vw, 52px);
   font-weight: 400;
-  margin: 8px 0 16px;
+  line-height: 1;
+}
+
+.graph-vote-row span:last-child {
+  text-align: right;
+}
+
+.graph-title {
+  font-size: clamp(34px, 6vw, 62px);
+  font-weight: 400;
+  line-height: 1;
+  margin: 0;
   text-align: center;
 }
 
@@ -270,7 +299,7 @@ body {
   border-top: 3px solid var(--bs-body-color);
   display: grid;
   grid-template-columns: 2fr 1fr;
-  min-height: 95px;
+  min-height: 74px;
 }
 
 .graph-details h2 {
@@ -284,7 +313,7 @@ body {
 
 .graph-description,
 .latest-votes {
-  padding: 12px;
+  padding: 6px 10px 10px;
 }
 
 .latest-votes {
