@@ -50,7 +50,7 @@ window.addEventListener("click", (event) => {
   }
 });
 
-// Slideshow 
+// Slideshow
 let slideIndex = 1;
 showSlides(slideIndex);
 
