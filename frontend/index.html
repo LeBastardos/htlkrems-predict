@@ -43,10 +43,32 @@
                 </ul>
             </div>
 
-            <!--Login/Signup-->
-            <div class="auth-buttons">
-                <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
-                <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
+            <div class="auth-area">
+                <!--Login/Signup-->
+                <div class="auth-buttons">
+                    <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
+                    <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
+                </div>
+
+                <aside class="ongoing-trades-panel">
+                    <section class="ranking-section">
+                        <h2>Ranking</h2>
+                        <ul>
+                            <li>1. User A</li>
+                            <li>2. User B</li>
+                            <li>3. User C</li>
+                        </ul>
+                    </section>
+
+                    <section class="ongoing-section">
+                        <h2>Ongoing Trades</h2>
+                        <ul>
+                            <li>Graph A live</li>
+                            <li>Graph B live</li>
+                            <li>Graph C live</li>
+                        </ul>
+                    </section>
+                </aside>
             </div>
         </div>
     </nav>
@@ -110,6 +132,7 @@
         </form>
     </div>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+    <div class="page-content">
     <div class="graph-overview">
         <!-- Slideshow container -->
         <div class="slideshow-container">
@@ -207,173 +230,175 @@
 
     </div>
 
-    <div class="expired-trades-wrapper">
-        <div class="expired-trades-slider" data-trade-slider>
-            <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
+    <div class="trades-area">
+        <div class="expired-trades-wrapper">
+            <div class="expired-trades-slider" data-trade-slider>
+                <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
 
-            <div class="trade-slide is-active">
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 24</span>
-                        <span>Nein: 11</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 18</span>
-                        <span>Nein: 17</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 31</span>
-                        <span>Nein: 9</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 12</span>
-                        <span>Nein: 20</span>
-                    </div>
-                </article>
+                <div class="trade-slide is-active">
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 24</span>
+                            <span>Nein: 11</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 18</span>
+                            <span>Nein: 17</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 31</span>
+                            <span>Nein: 9</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 12</span>
+                            <span>Nein: 20</span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="trade-slide">
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 20</span>
+                            <span>Nein: 14</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 27</span>
+                            <span>Nein: 8</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 16</span>
+                            <span>Nein: 21</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 30</span>
+                            <span>Nein: 13</span>
+                        </div>
+                    </article>
+                </div>
+
+                <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
             </div>
 
-            <div class="trade-slide">
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 20</span>
-                        <span>Nein: 14</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 27</span>
-                        <span>Nein: 8</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 16</span>
-                        <span>Nein: 21</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 30</span>
-                        <span>Nein: 13</span>
-                    </div>
-                </article>
+            <div class="expired-trades-slider" data-trade-slider>
+                <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
+
+                <div class="trade-slide is-active">
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 14</span>
+                            <span>Nein: 22</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 25</span>
+                            <span>Nein: 15</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 19</span>
+                            <span>Nein: 19</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 28</span>
+                            <span>Nein: 10</span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="trade-slide">
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 11</span>
+                            <span>Nein: 26</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 22</span>
+                            <span>Nein: 16</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 35</span>
+                            <span>Nein: 7</span>
+                        </div>
+                    </article>
+                    <article class="expired-trade-card">
+                        <div class="trade-graph-placeholder">
+                            <span>Graph Bild</span>
+                        </div>
+                        <div class="trade-result">
+                            <span>Ja: 17</span>
+                            <span>Nein: 24</span>
+                        </div>
+                    </article>
+                </div>
+
+                <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
             </div>
-
-            <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
-        </div>
-
-        <div class="expired-trades-slider" data-trade-slider>
-            <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
-
-            <div class="trade-slide is-active">
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 14</span>
-                        <span>Nein: 22</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 25</span>
-                        <span>Nein: 15</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 19</span>
-                        <span>Nein: 19</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 28</span>
-                        <span>Nein: 10</span>
-                    </div>
-                </article>
-            </div>
-
-            <div class="trade-slide">
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 11</span>
-                        <span>Nein: 26</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 22</span>
-                        <span>Nein: 16</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 35</span>
-                        <span>Nein: 7</span>
-                    </div>
-                </article>
-                <article class="expired-trade-card">
-                    <div class="trade-graph-placeholder">
-                        <span>Graph Bild</span>
-                    </div>
-                    <div class="trade-result">
-                        <span>Ja: 17</span>
-                        <span>Nein: 24</span>
-                    </div>
-                </article>
-            </div>
-
-            <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
         </div>
     </div>
 
