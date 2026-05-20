@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
 
             <!-- Mode Button -->
             <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
-                Light Mode
+                Dark Mode
             </button>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
@@ -49,26 +49,6 @@
                     <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
                     <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
                 </div>
-
-                <aside class="ongoing-trades-panel">
-                    <section class="ranking-section">
-                        <h2>Ranking</h2>
-                        <ul>
-                            <li>1. User A</li>
-                            <li>2. User B</li>
-                            <li>3. User C</li>
-                        </ul>
-                    </section>
-
-                    <section class="ongoing-section">
-                        <h2>Ongoing Trades</h2>
-                        <ul>
-                            <li>Graph A live</li>
-                            <li>Graph B live</li>
-                            <li>Graph C live</li>
-                        </ul>
-                    </section>
-                </aside>
             </div>
         </div>
     </nav>
@@ -133,9 +113,56 @@
     </div>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
     <div class="page-content">
-    <div class="graph-overview">
-        <!-- Slideshow container -->
-        <div class="slideshow-container">
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span class="stat-icon stat-blue">UP</span>
+                <div>
+                    <p>Total Votes</p>
+                    <strong>2,500</strong>
+                    <small>+8% from last week</small>
+                </div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon stat-cyan">LIVE</span>
+                <div>
+                    <p>Active Trades</p>
+                    <strong>123</strong>
+                    <small>+3 new today</small>
+                </div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon stat-yellow">WIN</span>
+                <div>
+                    <p>Best Streak</p>
+                    <strong>14</strong>
+                    <small>top user this week</small>
+                </div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon stat-green">EUR</span>
+                <div>
+                    <p>Total Volume</p>
+                    <strong>24,567</strong>
+                    <small>+11% from last week</small>
+                </div>
+            </article>
+        </section>
+
+        <section class="dashboard-main">
+            <div class="graph-overview">
+                <div class="panel-header">
+                    <div>
+                        <h2>Network Activities</h2>
+                        <span>Graph title sub-title</span>
+                    </div>
+                    <div class="date-filter">
+                        <button type="button">Start date</button>
+                        <button type="button">End date</button>
+                    </div>
+                </div>
+
+                <!-- Slideshow container -->
+                <div class="slideshow-container">
 
             <!-- Full-width images with number and caption text -->
             <div class="mySlides slide-fade">
@@ -228,7 +255,41 @@
             <span class="dot" onclick="currentSlide(3)"></span>
         </div>
 
-    </div>
+            </div>
+
+            <aside class="ongoing-trades-panel">
+                <section class="ranking-section">
+                    <h2>Ranking</h2>
+                    <ul class="ranking-list">
+                        <li><span>1. User A</span><strong>84%</strong></li>
+                        <li><span>2. User B</span><strong>79%</strong></li>
+                        <li><span>3. User C</span><strong>71%</strong></li>
+                    </ul>
+                </section>
+
+                <section class="ongoing-section">
+                    <h2>Ongoing Trades</h2>
+                    <ul class="ongoing-list">
+                        <li>
+                            <span>Graph A live</span>
+                            <div class="trade-progress"><span style="width: 82%"></span></div>
+                        </li>
+                        <li>
+                            <span>Graph B live</span>
+                            <div class="trade-progress"><span style="width: 64%"></span></div>
+                        </li>
+                        <li>
+                            <span>Graph C live</span>
+                            <div class="trade-progress"><span style="width: 45%"></span></div>
+                        </li>
+                        <li>
+                            <span>Graph D live</span>
+                            <div class="trade-progress"><span style="width: 72%"></span></div>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+        </section>
 
     <div class="trades-area">
         <div class="expired-trades-wrapper">
@@ -401,11 +462,12 @@
             </div>
         </div>
     </div>
-
-    <script src="script.js"></script>
-</body>
+    </div>
 
 <footer>
     
 </footer>
+
+    <script src="script.js"></script>
+</body>
 </html>
