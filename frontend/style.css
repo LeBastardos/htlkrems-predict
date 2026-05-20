@@ -366,3 +366,109 @@ body {
   from {opacity: .4}
   to {opacity: 1}
 }
+
+.expired-trades-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0 auto 24px;
+  max-width: 1100px;
+  width: calc(100% - 32px);
+}
+
+.expired-trades-slider {
+  align-items: center;
+  border: 2px solid var(--bs-border-color);
+  border-radius: 10px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 34px 1fr 34px;
+  min-height: 86px;
+  padding: 10px;
+}
+
+.trade-slide {
+  display: none;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.trade-slide.is-active {
+  display: grid;
+}
+
+.expired-trade-card {
+  border: 2px solid var(--bs-border-color);
+  border-radius: 9px;
+  min-height: 62px;
+  overflow: hidden;
+  padding: 6px 8px 5px;
+  position: relative;
+}
+
+.trade-graph-placeholder {
+  align-items: center;
+  background:
+    linear-gradient(135deg, transparent 0 42%, var(--bs-border-color) 43% 45%, transparent 46%),
+    linear-gradient(20deg, transparent 0 52%, var(--bs-border-color) 53% 55%, transparent 56%);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 6px;
+  display: flex;
+  height: 34px;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+}
+
+.trade-graph-placeholder span {
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 8px;
+}
+
+.trade-graph-placeholder img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.trade-arrow {
+  background: transparent;
+  border: 0;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+}
+
+.trade-result {
+  display: flex;
+  font-size: 12px;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+@media screen and (max-width: 800px) {
+  .trade-slide,
+  .trade-slide.is-active {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .expired-trades-slider {
+    grid-template-columns: 24px 1fr 24px;
+  }
+
+  .trade-slide,
+  .trade-slide.is-active {
+    grid-template-columns: 1fr;
+  }
+}

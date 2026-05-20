@@ -85,6 +85,25 @@ function showSlides(n) {
   dots[slideIndex-1].className += " active";
 }
 
+document.querySelectorAll("[data-trade-slider]").forEach((slider) => {
+  let tradeSlideIndex = 0;
+  const tradeSlides = slider.querySelectorAll(".trade-slide");
+
+  function showTradeSlide(index) {
+    tradeSlideIndex = (index + tradeSlides.length) % tradeSlides.length;
+
+    tradeSlides.forEach((tradeSlide, slideNumber) => {
+      tradeSlide.classList.toggle("is-active", slideNumber === tradeSlideIndex);
+    });
+  }
+
+  slider.querySelectorAll("[data-trade-direction]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showTradeSlide(tradeSlideIndex + Number(button.dataset.tradeDirection));
+    });
+  });
+});
+
 // Auto slideshow
 /* let slideIndex = 0;
 showSlides();
