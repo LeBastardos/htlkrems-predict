@@ -1,9 +1,15 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import bet, wallet, users, markets
+from app.api.endpoints import auth, bet, wallet, users, markets
 from app.api import websocket
 
 api_router = APIRouter()
+
+api_router.include_router(
+    auth.router,
+    prefix="/auth",
+    tags=["Authentifizierung"],
+)
 
 api_router.include_router(
     bet.router,
@@ -19,7 +25,7 @@ api_router.include_router(
 
 api_router.include_router(
     users.router,
-    prefix="/users",
+    prefix="/user",
     tags=["Benutzerverwaltung"],
 )
 

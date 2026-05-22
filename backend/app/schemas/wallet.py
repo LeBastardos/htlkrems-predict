@@ -19,6 +19,11 @@ class WalletRead(SQLModel):
     balance: float
 
 
+class BalanceResponse(SQLModel):
+    user_id: int
+    balance: float
+
+
 class ClaimDailyResponse(SQLModel):
     user_id: int
     new_balance: float
