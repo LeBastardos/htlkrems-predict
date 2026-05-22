@@ -6,7 +6,7 @@ from typing import Optional, List
 
 class MarketBase(SQLModel):
     """Basis-Eigenschaften für einen Markt"""
-    title: str = Field(..., min_length=5, max_length=100, example="Die 3BHIT gewinnt das Fußballturnier")
+    title: str = Field(..., min_length=5, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
     end_date: datetime
     initial_odds_yes: float = Field(default=0.5, description="Die Anfangsquote für 'Ja'")
@@ -34,7 +34,7 @@ class Market(MarketBase, table=True):
 
 class MarketCreate(SQLModel):
     """Schema zum Erstellen eines neuen Markts (POST /admin/create)"""
-    title: str = Field(..., min_length=5, max_length=100, example="Die 3BHIT gewinnt das Fußballturnier")
+    title: str = Field(..., min_length=5, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
     end_date: datetime
     initial_odds_yes: float = Field(default=0.5, description="Die Anfangsquote für 'Ja'")
@@ -63,8 +63,8 @@ class MarketRead(SQLModel):
 
 class MarketDelete(SQLModel):
     """Schema zum Löschen eines Markts (DELETE /admin/markets/{id})"""
-    reason: str = Field(..., min_length=5, max_length=200, example="Wette wurde doppelt erstellt")
-    confirm_delete: bool = Field(..., example=True)
+    reason: str = Field(..., min_length=5, max_length=200)
+    confirm_delete: bool = Field(...)
 
 
 class MarketResolve(SQLModel):
