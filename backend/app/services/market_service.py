@@ -1,54 +1,61 @@
-"""Service layer for market-related operations.
-
-The functions are intentionally lightweight placeholders for now, but their
-names and signatures are aligned with the FastAPI endpoints.
-"""
+from __future__ import annotations
 
 from datetime import datetime
+from typing import List
 
-from app.schemas.market import Market, MarketCreate, MarketResolve
+from sqlmodel import Session, select
 
-
-async def get_all_active_markets():
-    """Return all markets that are currently open."""
-    return []
-
-
-async def create_new_market(market_data: MarketCreate):
-    """Create a new market and return the serialized result."""
-    return Market(
-        title=market_data.title,
-        description=market_data.description,
-        end_date=market_data.end_date,
-        initial_odds_yes=market_data.initial_odds_yes,
-        initial_odds_no=market_data.initial_odds_no,
-        id=1,
-        status="OPEN",
-        current_pool=0.0,
-        odds_yes=market_data.initial_odds_yes,
-        odds_no=market_data.initial_odds_no,
-        created_at=datetime.now(),
-    )
+from app.db.session import engine
+from app.schemas.market import Market, MarketCreate, MarketHistory, MarketHistoryPoint
+from app.schemas.bet import Bet
 
 
-async def get_odds_history(market_id: int):
-    """Return the historical odds for a market."""
-    return {"market_id": market_id, "history": []}
+async def get_active_markets() -> List[Market]:
+    with Session(engine) as session:
+        stmt = select(Market).where(Market.status == "OPEN")
+        results = session.exec(stmt).all()
+        return results
 
 
-async def process_market_payout(market_id: int, resolve_data: MarketResolve):
-    """Resolve a market and calculate payouts."""
-    return {"message": "Payout logic not implemented yet", "market_id": market_id, "outcome": resolve_data.outcome}
+async def create_market(market_data: MarketCreate) -> Market:
+    with Session(engine) as session:
+        m = Market(
+            title=market_data.title,
+            description=market_data.description,
+            end_date=market_data.end_date,
+            initial_odds_yes=market_data.initial_odds_yes,
+            initial_odds_no=market_data.initial_odds_no,
+            status="OPEN",
+            current_pool=0.0,
+            odds_yes=market_data.initial_odds_yes,
+            odds_no=market_data.initial_odds_no,
+            created_at=datetime.utcnow(),
+        )
+        session.add(m)
+        session.commit()
+        session.refresh(m)
+        return m
 
 
-async def delete_market_entry(market_id: int, reason: str):
-    """Delete a market if it is still eligible for deletion."""
-    return {"status": "success", "market_id": market_id, "reason": reason}
+async def get_market_history(market_id: int) -> MarketHistory:
+    # For now return empty history; could be built from stored odds over time.
+    return MarketHistory(market_id=market_id, history=[])
 
 
-# Backward-compatible aliases for endpoint naming.
-get_active_markets = get_all_active_markets
-create_market = create_new_market
-get_market_history = get_odds_history
-resolve_market = process_market_payout
-delete_market = delete_market_entry
+async def resolve_market(market_id: int, resolution) -> dict:
+    with Session(engine) as session:
+        m = session.get(Market, market_id)
+        if not m:
+            return {"error": "market not found"}
+        m.status = "RESOLVED"
+        session.add(m)
+        session.commit()
+        return {"market_id": market_id, "status": "resolved", "outcome": getattr(resolution, 'outcome', None)}
+
+
+async def delete_market(market_id: int, reason: str) -> None:
+    with Session(engine) as session:
+        m = session.get(Market, market_id)
+        if m:
+            session.delete(m)
+            session.commit()

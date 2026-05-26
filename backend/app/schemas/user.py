@@ -1,27 +1,52 @@
-import enum
-import uuid
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 from sqlmodel import Field, SQLModel
-from pydantic import EmailStr
 
-class UserRole(str, enum.Enum):
-    USER = "user"
-    TRUSTEE = "trustee"
-    ADMIN = "admin"
 
-class UserBase(SQLModel, table=True):
-    __tablenAme__ = "users"
+class MicrosoftProfile(BaseModel):
+    azure_oid: str
+    name: str
+    email: EmailStr
 
-    id: uuid.UUID = Field (
-        default_factory = uuid.uuid4, #erstellt ID wenn nicht gegeben
-        primary_key = True,
-        index = True,
-        nullable = False
-    )
 
-    name: str = Field(minLength = 3)
+class AuthCallbackRequest(BaseModel):
+    code: str
+    redirect_uri: Optional[str] = None
 
-    email: EmailStr = Field(unique = True, index = True)
 
-    balance: float = Field(default=0)
+class UserBase(SQLModel):
+    username: Optional[str] = Field(default=None, index=True, unique=True, min_length=3)
+    email: EmailStr | None = Field(default=None, index=True)
 
-    role: UserRole = Field(default=UserRole.USER)
+
+class User(UserBase, table=True):
+    __tablename__ = "users"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: Optional[str] = Field(default=None)
+    azure_oid: Optional[str] = Field(default=None, index=True)
+    role: str = Field(default="user")
+    allow_as_subject: bool = Field(default=True)
+    last_login_at: Optional[datetime] = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class UserRead(SQLModel):
+    id: int
+    username: Optional[str]
+    name: Optional[str]
+    email: Optional[EmailStr]
+    role: str
+    allow_as_subject: bool
+
+
+class UserSettingsUpdate(BaseModel):
+    allow_as_subject: bool
+
+
+class AuthTokenResponse(BaseModel):
+    access_token: str
+    user: UserRead
