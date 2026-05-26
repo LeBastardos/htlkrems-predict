@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTLkrems Predict · Profile</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
+                Dark Mode
+            </button>
+
+            <div class="navbar-search">
+                <form>
+                    <label for="search">Search:</label>
+                    <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                </form>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#live-markets">Aktuell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profil</a></li>
+                </ul>
+            </div>
+
+            <div class="auth-area">
+                <div class="auth-buttons">
+                    <span class="navbar-text text-light" id="authUserName"></span>
+                    <a class="btn btn-outline-light d-none" id="profileLink" href="profile.html">Profile</a>
+                    <button type="button" class="btn btn-outline-light d-none" id="logoutButton">Logout</button>
+                    <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content auth-animate">
+            <div class="auth-modal-header">
+                <h2>Sign in</h2>
+                <button type="button" class="auth-close" data-close-modal="loginModal" title="Close Modal">&times;</button>
+            </div>
+
+            <p>Sign in with your HTL Krems Microsoft account to place bets and view your profile.</p>
+
+            <div class="auth-actions">
+                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
+                <button type="button" class="auth-submit" id="microsoftLoginButton">Continue with Microsoft</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content" id="profilePage">
+        <header class="page-header">
+            <div>
+                <h1>Your Profile</h1>
+                <p>Track your balance and bets in one place.</p>
+            </div>
+            <span class="backend-badge" id="profileStatus">Loading...</span>
+        </header>
+
+        <div class="profile-grid">
+            <section class="profile-card">
+                <h2>Account Details</h2>
+                <dl class="profile-list">
+                    <div>
+                        <dt>Name</dt>
+                        <dd id="profileName">-</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd id="profileEmail">-</dd>
+                    </div>
+                    <div>
+                        <dt>Role</dt>
+                        <dd id="profileRole">-</dd>
+                    </div>
+                    <div>
+                        <dt>Balance</dt>
+                        <dd id="profileBalance">-</dd>
+                    </div>
+                </dl>
+
+                <div class="profile-actions">
+                    <button class="btn btn-success" type="button" id="claimDailyButton">Claim daily bonus</button>
+                    <span id="claimDailyStatus" class="form-status"></span>
+                </div>
+            </section>
+
+            <section class="profile-card">
+                <h2>My Bets</h2>
+                <ul class="profile-bets-list" id="profileBetsList">
+                    <li>Loading bets...</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
