@@ -31,6 +31,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - ../.env
     environment:
       PROJECT_NAME: ${PROJECT_NAME:-htlkrems-predict}
       API_V1_STR: ${API_V1_STR:-/api/v1}
