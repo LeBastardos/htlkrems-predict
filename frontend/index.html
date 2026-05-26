@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HTLkrems Predict</title>
 
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
@@ -155,9 +155,13 @@
                         <h2>Network Activities</h2>
                         <span>Graph title sub-title</span>
                     </div>
-                    <div class="date-filter">
+                    <div class="dashboard-actions">
+                        <div class="date-filter">
                         <button type="button">Start date</button>
                         <button type="button">End date</button>
+                            <button type="button" id="refreshMarketsButton">Refresh</button>
+                        </div>
+                        <span class="backend-badge" id="apiStatus">Connecting...</span>
                     </div>
                 </div>
 
@@ -259,8 +263,8 @@
 
             <aside class="ongoing-trades-panel">
                 <section class="ranking-section">
-                    <h2>Ranking</h2>
-                    <ul class="ranking-list">
+                    <h2>Live Markets</h2>
+                    <ul class="ranking-list" id="liveMarketsList">
                         <li><span>1. User A</span><strong>84%</strong></li>
                         <li><span>2. User B</span><strong>79%</strong></li>
                         <li><span>3. User C</span><strong>71%</strong></li>
@@ -268,8 +272,8 @@
                 </section>
 
                 <section class="ongoing-section">
-                    <h2>Ongoing Trades</h2>
-                    <ul class="ongoing-list">
+                    <h2>Backend Feed</h2>
+                    <ul class="ongoing-list" id="marketFeedList">
                         <li>
                             <span>Graph A live</span>
                             <div class="trade-progress"><span style="width: 82%"></span></div>

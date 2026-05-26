@@ -288,6 +288,12 @@ body {
   margin-bottom: 12px;
 }
 
+.dashboard-actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
 .panel-header h2 {
   font-size: 22px;
   font-weight: 500;
@@ -313,6 +319,24 @@ body {
   font-size: 12px;
   min-height: 32px;
   padding: 5px 10px;
+}
+
+.backend-badge {
+  align-items: center;
+  border: 1px solid rgba(34, 185, 154, 0.35);
+  border-radius: 999px;
+  color: #22b99a;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 32px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+
+.backend-badge.is-warn {
+  border-color: rgba(220, 53, 69, 0.35);
+  color: #dc3545;
 }
 
 /* Slideshow container */
@@ -684,12 +708,21 @@ body {
     flex-direction: column;
   }
 
+  .dashboard-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .date-filter {
     width: 100%;
   }
 
   .date-filter button {
     flex: 1;
+  }
+
+  .backend-badge {
+    justify-content: center;
   }
 }
 
