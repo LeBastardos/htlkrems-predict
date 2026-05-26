@@ -5,3 +5,5 @@ pydantic
 sqlalchemy
 pymysql
 sqlmodel
+msal
+PyJWT
