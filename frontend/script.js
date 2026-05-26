@@ -12,12 +12,14 @@ const liveMarketsList = document.getElementById("liveMarketsList");
 const marketFeedList = document.getElementById("marketFeedList");
 const authUserName = document.getElementById("authUserName");
 const profileLink = document.getElementById("profileLink");
+const adminLink = document.getElementById("adminLink");
 const logoutButton = document.getElementById("logoutButton");
 const microsoftLoginButton = document.getElementById("microsoftLoginButton");
 const authCallbackStatus = document.getElementById("authCallbackStatus");
 const profilePage = document.getElementById("profilePage");
 const marketPage = document.getElementById("marketPage");
 const betPage = document.getElementById("betPage");
+const adminPage = document.getElementById("adminPage");
 
 let slideIndex = 1;
 let reconnectTimer = null;
@@ -68,6 +70,7 @@ function updateAuthUi() {
   const user = getStoredUser();
   const token = getAuthToken();
   const isLoggedIn = Boolean(token && user);
+  const isAdmin = Boolean(user && user.role === "admin");
 
   if (authUserName) {
     authUserName.textContent = isLoggedIn ? (user.name || user.email || "Signed in") : "";
@@ -75,6 +78,10 @@ function updateAuthUi() {
 
   if (profileLink) {
     profileLink.classList.toggle("d-none", !isLoggedIn);
+  }
+
+  if (adminLink) {
+    adminLink.classList.toggle("d-none", !isLoggedIn || !isAdmin);
   }
 
   if (logoutButton) {
@@ -207,6 +214,9 @@ window.currentSlide = currentSlide;
 function buildMarketRows(markets) {
   const sortedMarkets = [...markets].sort((left, right) => Number(right.current_pool || 0) - Number(left.current_pool || 0));
   const topPool = Number(sortedMarkets[0]?.current_pool || 0);
+  const adminHint = adminLink && !adminLink.classList.contains("d-none")
+    ? ' <a href="admin.html">Create one in Admin</a>'
+    : "";
 
   if (liveMarketsList) {
     liveMarketsList.innerHTML = sortedMarkets.length
@@ -216,7 +226,7 @@ function buildMarketRows(markets) {
             <strong>${formatNumber(market.current_pool)} Coins</strong>
           </li>
         `).join("")
-      : '<li><span>No active markets yet</span><strong>0</strong></li>';
+      : `<li><span>No active markets yet.${adminHint}</span><strong>0</strong></li>`;
   }
 
   if (marketFeedList) {
@@ -267,6 +277,26 @@ function updateSlidesWithMarkets(markets) {
     });
 
     if (slides[0]) {
+      const title = slides[0].querySelector(".graph-title");
+      const description = slides[0].querySelector(".graph-description p");
+      const latestVotes = slides[0].querySelectorAll(".latest-votes p");
+      const numberText = slides[0].querySelector(".numbertext");
+
+      if (title) {
+        title.textContent = "No live markets yet";
+      }
+      if (description) {
+        description.textContent = "As soon as an admin creates a market, the live feed will appear here.";
+      }
+      if (latestVotes[0]) {
+        latestVotes[0].textContent = "Pool: 0 Coins";
+      }
+      if (latestVotes[1]) {
+        latestVotes[1].textContent = "Odds: 0% yes / 0% no";
+      }
+      if (numberText) {
+        numberText.textContent = "1 / 1";
+      }
       slides[0].style.display = "block";
     }
 
@@ -453,6 +483,238 @@ async function loadProfilePage() {
       profileStatus.textContent = "Please sign in to view your profile.";
       profileStatus.classList.add("is-warn");
     }
+
+    async function loadAdminPage() {
+      const adminStatus = document.getElementById("adminStatus");
+      const adminMarketsList = document.getElementById("adminMarketsList");
+      const adminCreateForm = document.getElementById("adminCreateMarketForm");
+      const adminResolveForm = document.getElementById("adminResolveMarketForm");
+      const adminDeleteForm = document.getElementById("adminDeleteMarketForm");
+      const adminFormStatus = document.getElementById("adminFormStatus");
+
+      const setAdminStatus = (text, tone = "ok") => {
+        if (!adminStatus) {
+          return;
+        }
+        adminStatus.textContent = text;
+        adminStatus.classList.toggle("is-warn", tone !== "ok");
+      };
+
+      const renderMarkets = (markets) => {
+        if (!adminMarketsList) {
+          return;
+        }
+        if (!markets.length) {
+          adminMarketsList.innerHTML = "<li>No active markets yet.</li>";
+          return;
+        }
+        adminMarketsList.innerHTML = markets.map((market) => `
+          <li>
+            <div>
+              <strong>#${market.id} · ${market.title}</strong>
+              <small>${market.status || "OPEN"} · Ends ${formatDate(market.end_date)}</small>
+            </div>
+            <span>${formatNumber(market.current_pool)} Coins</span>
+          </li>
+        `).join("");
+      };
+
+      if (!getAuthToken()) {
+        setAdminStatus("Sign in to access the admin panel.", "warn");
+        return;
+      }
+
+      try {
+        const userResponse = await apiFetch("/api/v1/user/me");
+        if (!userResponse.ok) {
+          throw new Error(`User check failed (${userResponse.status})`);
+        }
+        const user = await userResponse.json();
+        if (user.role !== "admin") {
+          setAdminStatus("Admin access required.", "warn");
+          return;
+        }
+      } catch (error) {
+        console.error("Admin access check failed", error);
+        setAdminStatus("Unable to verify admin access.", "warn");
+        return;
+      }
+
+      setAdminStatus("Admin access confirmed.");
+
+      try {
+        const marketsResponse = await apiFetch("/api/v1/markets/active");
+        if (!marketsResponse.ok) {
+          throw new Error(`Market list failed (${marketsResponse.status})`);
+        }
+        const markets = await marketsResponse.json();
+        renderMarkets(markets);
+      } catch (error) {
+        console.error("Market list failed", error);
+        setAdminStatus("Could not load active markets.", "warn");
+      }
+
+      if (adminCreateForm) {
+        adminCreateForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const title = adminCreateForm.querySelector("input[name=title]")?.value?.trim();
+          const description = adminCreateForm.querySelector("textarea[name=description]")?.value?.trim() || null;
+          const endDateValue = adminCreateForm.querySelector("input[name=end_date]")?.value;
+          const oddsYes = Number(adminCreateForm.querySelector("input[name=odds_yes]")?.value || 0.5);
+          const oddsNo = Number(adminCreateForm.querySelector("input[name=odds_no]")?.value || 0.5);
+
+          if (!title || !endDateValue) {
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Please provide a title and end date.";
+            }
+            return;
+          }
+
+          const endDate = new Date(endDateValue);
+          if (Number.isNaN(endDate.getTime())) {
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Please provide a valid end date.";
+            }
+            return;
+          }
+
+          if (adminFormStatus) {
+            adminFormStatus.textContent = "Creating market...";
+          }
+
+          try {
+            const response = await apiFetch("/api/v1/markets/admin/create", {
+              method: "POST",
+              body: JSON.stringify({
+                title,
+                description,
+                end_date: endDate.toISOString(),
+                initial_odds_yes: oddsYes,
+                initial_odds_no: oddsNo,
+              }),
+            });
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(errorText || `Create failed (${response.status})`);
+            }
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Market created.";
+            }
+            adminCreateForm.reset();
+            const marketsResponse = await apiFetch("/api/v1/markets/active");
+            if (marketsResponse.ok) {
+              renderMarkets(await marketsResponse.json());
+            }
+          } catch (error) {
+            console.error("Market create failed", error);
+            if (adminFormStatus) {
+              adminFormStatus.textContent = `Create failed: ${error.message}`;
+            }
+          }
+        });
+      }
+
+      if (adminResolveForm) {
+        adminResolveForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const marketId = Number(adminResolveForm.querySelector("input[name=market_id]")?.value || 0);
+          const outcomeValue = adminResolveForm.querySelector("select[name=outcome]")?.value;
+          const adminNote = adminResolveForm.querySelector("input[name=admin_note]")?.value?.trim() || null;
+
+          if (!marketId || !outcomeValue) {
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Provide a market ID and outcome.";
+            }
+            return;
+          }
+
+          if (adminFormStatus) {
+            adminFormStatus.textContent = "Resolving market...";
+          }
+
+          try {
+            const response = await apiFetch(`/api/v1/markets/admin/resolve?market_id=${marketId}`, {
+              method: "POST",
+              body: JSON.stringify({
+                outcome: outcomeValue === "yes",
+                admin_note: adminNote,
+              }),
+            });
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(errorText || `Resolve failed (${response.status})`);
+            }
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Market resolved.";
+            }
+            adminResolveForm.reset();
+            const marketsResponse = await apiFetch("/api/v1/markets/active");
+            if (marketsResponse.ok) {
+              renderMarkets(await marketsResponse.json());
+            }
+          } catch (error) {
+            console.error("Market resolve failed", error);
+            if (adminFormStatus) {
+              adminFormStatus.textContent = `Resolve failed: ${error.message}`;
+            }
+          }
+        });
+      }
+
+      if (adminDeleteForm) {
+        adminDeleteForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const marketId = Number(adminDeleteForm.querySelector("input[name=market_id]")?.value || 0);
+          const reason = adminDeleteForm.querySelector("input[name=reason]")?.value?.trim();
+          const confirm = adminDeleteForm.querySelector("input[name=confirm_delete]")?.checked;
+
+          if (!marketId || !reason) {
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Provide a market ID and reason.";
+            }
+            return;
+          }
+
+          if (!confirm) {
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Please confirm deletion.";
+            }
+            return;
+          }
+
+          if (adminFormStatus) {
+            adminFormStatus.textContent = "Deleting market...";
+          }
+
+          try {
+            const response = await apiFetch(`/api/v1/markets/admin/markets/${marketId}`, {
+              method: "DELETE",
+              body: JSON.stringify({
+                reason,
+                confirm_delete: true,
+              }),
+            });
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(errorText || `Delete failed (${response.status})`);
+            }
+            if (adminFormStatus) {
+              adminFormStatus.textContent = "Market deleted.";
+            }
+            adminDeleteForm.reset();
+            const marketsResponse = await apiFetch("/api/v1/markets/active");
+            if (marketsResponse.ok) {
+              renderMarkets(await marketsResponse.json());
+            }
+          } catch (error) {
+            console.error("Market delete failed", error);
+            if (adminFormStatus) {
+              adminFormStatus.textContent = `Delete failed: ${error.message}`;
+            }
+          }
+        });
+      }
+    }
     return;
   }
 
@@ -499,7 +761,7 @@ async function loadProfilePage() {
               <a href="bet.html?id=${bet.id}">Details</a>
             </li>
           `).join("")
-        : "<li>No bets yet. Head to the markets to place your first bet.</li>";
+        : '<li>No bets yet. Browse <a href="index.html#live-markets">live markets</a> to place your first bet.</li>';
     }
 
     if (profileStatus) {
@@ -834,6 +1096,10 @@ window.addEventListener("load", async () => {
 
   if (betPage) {
     await loadBetPage();
+  }
+
+  if (adminPage) {
+    await loadAdminPage();
   }
 
   const hasDashboard = Boolean(apiStatus || liveMarketsList || marketFeedList);

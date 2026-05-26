@@ -31,7 +31,7 @@
             <div class="navbar-search">
                 <form>
                     <label for="search">Search:</label>
-                    <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                    <input type="text" class="form-control" id="search" placeholder="Search markets">
                 </form>
             </div>
 
@@ -40,6 +40,7 @@
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#live-markets">Aktuell</a></li>
                     <li class="nav-item"><a class="nav-link" href="profile.html">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link d-none" id="adminLink" href="admin.html">Admin</a></li>
                 </ul>
             </div>
 
@@ -113,8 +114,8 @@
             <div class="graph-overview">
                 <div class="panel-header">
                     <div>
-                        <h2>Network Activities</h2>
-                        <span>Graph title sub-title</span>
+                        <h2>Market activity</h2>
+                        <span>Live markets and odds updates</span>
                     </div>
                     <div class="dashboard-actions">
                         <div class="date-filter">
@@ -233,7 +234,7 @@
                 </section>
 
                 <section class="ongoing-section">
-                    <h2>Backend Feed</h2>
+                    <h2>Market feed</h2>
                     <ul class="ongoing-list" id="marketFeedList">
                         <li>
                             <span>Graph A live</span>
