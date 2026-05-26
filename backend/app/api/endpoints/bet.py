@@ -1,53 +1,32 @@
-from __future__ import annotations
-
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
-
-from app.core.auth import get_current_user
-from app.db.models import User
-from app.db.session import get_session
+from fastapi import APIRouter, HTTPException, status
 from app.schemas.bet import BetCreate, BetRead
-import app.db.db_service as db_service
+import app.services.wallet as wallet_service
+import app.services.market_service as market_service
+from typing import Dict
 
 router = APIRouter()
 
+# simple in-memory bet id counter
+_next_bet_id = 1
+
 
 @router.post("/place", response_model=BetRead, status_code=status.HTTP_201_CREATED)
-def place_bet(
-    bet_in: BetCreate,
-    db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user),
-):
+async def place_bet(bet: BetCreate):
+    """Place a bet: check balance, deduct amount, and return bet info.
+
+    This is a minimal implementation intended as a placeholder.
     """
-    Platziert eine Wette.
-    Atomar: prüft Balance → zieht Coins ab → erstellt Bet → aktualisiert Markt-Odds.
-    """
-    try:
-        bet = db_service.place_bet_atomic(
-            db=db,
-            user_id=current_user.id,
-            market_id=bet_in.market_id,
-            amount=bet_in.amount,
-            choice=bet_in.choice,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    bal = await wallet_service.get_user_balance(bet.user_id)
+    if bal < bet.amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
 
-    # Broadcast WebSocket update (best-effort, non-blocking)
-    try:
-        import asyncio
-        from app.api.websocket import notify_market_update
-        from app.db.db_service import get_market_by_id
+    # deduct amount
+    await wallet_service.update_user_balance(bet.user_id, -bet.amount)
 
-        market = get_market_by_id(db, bet_in.market_id)
-        if market:
-            asyncio.create_task(
-                notify_market_update(
-                    market.id,
-                    {"yes": market.odds_yes, "no": market.odds_no},
-                )
-            )
-    except Exception:
-        pass  # WebSocket broadcast is best-effort
+    # optionally we could validate market exists; for now assume ok
+    global _next_bet_id
+    bid = _next_bet_id
+    _next_bet_id += 1
 
-    return BetRead.model_validate(bet, from_attributes=True)
+    # notify market_service / websocket in future
+    return BetRead(id=bid, user_id=bet.user_id, market_id=bet.market_id, amount=bet.amount, choice=bet.choice)
