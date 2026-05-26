@@ -6,3 +6,4 @@ sqlalchemy
 pymysql
 sqlmodel
 msal
+PyJWT
