@@ -95,6 +95,7 @@ def build_microsoft_authorization_url(redirect_uri: str | None = None, state: st
 
 
 def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
+	admin_emails = {email.strip().lower() for email in settings.ADMIN_EMAILS.split(",") if email.strip()}
 	statement = select(User).where((User.email == profile.email) | (User.azure_oid == profile.azure_oid))
 	user = session.exec(statement).first()
 	if user is None:
@@ -104,6 +105,8 @@ def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
 			azure_oid=profile.azure_oid,
 			last_login_at=datetime.now(timezone.utc),
 		)
+		if profile.email in admin_emails:
+			user.role = "admin"
 		session.add(user)
 		session.commit()
 		session.refresh(user)
@@ -111,6 +114,8 @@ def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
 
 	user.name = profile.name
 	user.azure_oid = profile.azure_oid
+	if profile.email in admin_emails:
+		user.role = "admin"
 	user.last_login_at = datetime.now(timezone.utc)
 	session.add(user)
 	session.commit()

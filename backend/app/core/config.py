@@ -10,6 +10,7 @@ class Settings:
 	AZURE_CLIENT_SECRET = os.getenv("AZURE_CLIENT_SECRET", "")
 	AZURE_REDIRECT_URI = os.getenv("AZURE_REDIRECT_URI", "http://localhost:3000/auth/callback")
 	ALLOWED_EMAIL_DOMAIN = os.getenv("ALLOWED_EMAIL_DOMAIN", "htlkrems.at")
+	ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "l.yvon@htlkrems.at")
 
 	JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
 	JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
