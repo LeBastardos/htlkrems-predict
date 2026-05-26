@@ -77,6 +77,17 @@ def exchange_microsoft_code(code: str, redirect_uri: str | None = None) -> Micro
 	return MicrosoftLoginResult(profile=profile, claims=claims)
 
 
+def build_microsoft_authorization_url(redirect_uri: str | None = None, state: str | None = None) -> str:
+	app = _build_confidential_client()
+	return app.get_authorization_request_url(
+		scopes=["openid", "profile", "email", "offline_access", "User.Read"],
+		redirect_uri=redirect_uri or settings.AZURE_REDIRECT_URI,
+		state=state,
+		prompt="select_account",
+		response_mode="query",
+	)
+
+
 def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
 	statement = select(User).where((User.email == profile.email) | (User.azure_oid == profile.azure_oid))
 	user = session.exec(statement).first()

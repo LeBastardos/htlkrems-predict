@@ -15,6 +15,14 @@ async def get_active_markets():
     """
     return await market_service.get_active_markets()
 
+
+@router.get("/{market_id}", response_model=MarketRead)
+async def get_market(market_id: int):
+    try:
+        return await market_service.get_market(market_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Market not found")
+
 @router.post("/admin/create", response_model=MarketRead, status_code=status.HTTP_201_CREATED)
 async def create_market(market_in: MarketCreate, current_user: User = Depends(get_current_user)):
     """
