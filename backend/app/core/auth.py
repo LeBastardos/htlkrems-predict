@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Callable
 
 import msal
 from fastapi import Depends, HTTPException, status
@@ -17,6 +17,8 @@ from app.schemas.user import MicrosoftProfile
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
+
+_ROLE_HIERARCHY = {"user": 0, "trustee": 1, "admin": 2}
 
 
 @dataclass(slots=True)
@@ -125,3 +127,22 @@ def get_current_user(
 	if user is None:
 		raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found.")
 	return user
+
+
+def require_role(min_role: str) -> Callable[..., User]:
+	"""
+	Dependency-Factory: Prüft ob der eingeloggte User mindestens die angegebene Rolle hat.
+	Verwendung: current_user: User = Depends(require_role("admin"))
+	"""
+	def _checker(current_user: User = Depends(get_current_user)) -> User:
+		user_level = _ROLE_HIERARCHY.get(current_user.role, 0)
+		required_level = _ROLE_HIERARCHY.get(min_role, 99)
+		if user_level < required_level:
+			raise HTTPException(
+				status_code=status.HTTP_403_FORBIDDEN,
+				detail=f"Berechtigung verweigert. Benötigt: '{min_role}', vorhanden: '{current_user.role}'.",
+			)
+		return current_user
+
+	return _checker
+

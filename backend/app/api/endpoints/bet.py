@@ -1,32 +1,79 @@
-from fastapi import APIRouter, HTTPException, status
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session, select
+
+from app.core.auth import get_current_user
+from app.db.models import User, Market, Bet
+from app.db.session import get_session
 from app.schemas.bet import BetCreate, BetRead
-import app.services.wallet as wallet_service
-import app.services.market_service as market_service
-from typing import Dict
+from app.services import wallet as wallet_service
+from app.services import market_service
+from app.services.calculator import estimate_payout_multiplier
+from app.api.websocket import notify_market_update
 
 router = APIRouter()
 
-# simple in-memory bet id counter
-_next_bet_id = 1
-
 
 @router.post("/place", response_model=BetRead, status_code=status.HTTP_201_CREATED)
-async def place_bet(bet: BetCreate):
-    """Place a bet: check balance, deduct amount, and return bet info.
-
-    This is a minimal implementation intended as a placeholder.
+def place_bet(
+    bet_in: BetCreate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
     """
-    bal = await wallet_service.get_user_balance(bet.user_id)
-    if bal < bet.amount:
-        raise HTTPException(status_code=400, detail="Insufficient balance")
+    Wette platzieren: Balance prüfen, Coins abziehen, Wette speichern, Quoten aktualisieren.
+    Alles in einer DB-Session (atomar durch SQLModel/SQLAlchemy transaction).
+    """
+    market = session.get(Market, bet_in.market_id)
+    if market is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Markt nicht gefunden.")
+    if market.status != "OPEN":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Dieser Markt ist nicht mehr offen.")
 
-    # deduct amount
-    await wallet_service.update_user_balance(bet.user_id, -bet.amount)
+    # Balance abziehen (wirft 400 bei zu wenig Guthaben)
+    wallet_service.deduct_balance(
+        session,
+        current_user.id,
+        bet_in.amount,
+        reason=f"Wette auf Markt #{market.id}: {market.title}",
+    )
 
-    # optionally we could validate market exists; for now assume ok
-    global _next_bet_id
-    bid = _next_bet_id
-    _next_bet_id += 1
+    # Wette speichern
+    bet = Bet(
+        user_id=current_user.id,
+        market_id=market.id,
+        amount=bet_in.amount,
+        choice=bet_in.choice,
+    )
+    session.add(bet)
+    session.commit()
+    session.refresh(bet)
 
-    # notify market_service / websocket in future
-    return BetRead(id=bid, user_id=bet.user_id, market_id=bet.market_id, amount=bet.amount, choice=bet.choice)
+    # Markt-Pool und Quoten aktualisieren
+    market_service.update_market_after_bet(session, market, bet_in.amount, bet_in.choice)
+
+    # WebSocket-Broadcast (fire-and-forget)
+    import asyncio
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            loop.create_task(
+                notify_market_update(market.id, {"yes": market.odds_yes, "no": market.odds_no})
+            )
+    except Exception:
+        pass
+
+    return BetRead.model_validate(bet, from_attributes=True)
+
+
+@router.get("/my", response_model=list[BetRead])
+def my_bets(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    """Alle eigenen Wetten des eingeloggten Users."""
+    stmt = select(Bet).where(Bet.user_id == current_user.id).order_by(Bet.placed_at.desc())
+    bets = session.exec(stmt).all()
+    return [BetRead.model_validate(b, from_attributes=True) for b in bets]
+

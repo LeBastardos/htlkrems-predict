@@ -1,22 +1,22 @@
-from sqlmodel import SQLModel, Field
+from __future__ import annotations
+
+from datetime import datetime, timezone
 from typing import Optional, List
-from datetime import datetime
+
+from sqlmodel import SQLModel, Field
 
 
-class WalletBase(SQLModel):
-    user_id: int
-    balance: float = Field(default=1000.0)
+class Transaction(SQLModel, table=True):
+    """Datenbank-Modell für Wallet-Transaktionen."""
 
+    __tablename__ = "transactions"
 
-class Wallet(WalletBase, table=True):
-    """DB model for wallet (one row per user)."""
-    __tablename__ = "wallets"
-    user_id: int = Field(primary_key=True)
-
-
-class WalletRead(SQLModel):
-    user_id: int
-    balance: float
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(index=True)
+    amount: float
+    type: str  # "bet", "win", "daily", "refund", "admin_grant"
+    reason: Optional[str] = None
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class BalanceResponse(SQLModel):
@@ -27,18 +27,7 @@ class BalanceResponse(SQLModel):
 class ClaimDailyResponse(SQLModel):
     user_id: int
     new_balance: float
-
-
-class Transaction(SQLModel, table=True):
-    """DB model for wallet transactions."""
-    __tablename__ = "transactions"
-
-    id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int
-    amount: float
-    type: str
-    reason: Optional[str] = None
-    timestamp: datetime = Field(default_factory=datetime.now)
+    coins_claimed: float
 
 
 class TransactionRead(SQLModel):

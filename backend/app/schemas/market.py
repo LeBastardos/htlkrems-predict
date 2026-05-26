@@ -1,7 +1,10 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from typing import Optional, List
+
 from sqlmodel import SQLModel, Field
 from pydantic import field_validator
-from datetime import datetime
-from typing import Optional, List
 
 
 class MarketBase(SQLModel):
@@ -15,7 +18,8 @@ class MarketBase(SQLModel):
     @field_validator('end_date', mode='after')
     @classmethod
     def end_date_has_to_be_future(cls, v):
-        if v <= datetime.now():
+        now = datetime.now(v.tzinfo) if v.tzinfo else datetime.now()
+        if v <= now:
             raise ValueError('Das Enddatum muss in der Zukunft liegen.')
         return v
 
@@ -23,13 +27,30 @@ class MarketBase(SQLModel):
 class Market(MarketBase, table=True):
     """Datenbank-Modell für Märkte"""
     __tablename__ = "markets"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
-    status: str = Field(default="OPEN")  # "OPEN", "CLOSED", "CANCELED", "RESOLVED"
+    status: str = Field(default="OPEN")  # "OPEN", "CLOSED", "RESOLVED", "CANCELED"
     current_pool: float = Field(default=0.0)
+    yes_pool: float = Field(default=0.0)
+    no_pool: float = Field(default=0.0)
     odds_yes: float = Field(default=0.5)
     odds_no: float = Field(default=0.5)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: Optional[int] = Field(default=None)  # user_id of creator
+    outcome: Optional[bool] = Field(default=None)
+
+
+class OddsHistory(SQLModel, table=True):
+    """Datenbank-Modell für die Quoten-Historie"""
+    __tablename__ = "odds_history"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    market_id: int = Field(index=True)
+    odds_yes: float
+    odds_no: float
+    yes_pool: float = Field(default=0.0)
+    no_pool: float = Field(default=0.0)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class MarketCreate(SQLModel):
@@ -43,32 +64,36 @@ class MarketCreate(SQLModel):
     @field_validator('end_date', mode='after')
     @classmethod
     def end_date_has_to_be_future(cls, v):
-        if v <= datetime.now():
+        now = datetime.now(v.tzinfo) if v.tzinfo else datetime.now()
+        if v <= now:
             raise ValueError('Das Enddatum muss in der Zukunft liegen.')
         return v
 
 
 class MarketRead(SQLModel):
-    """Schema zum Lesen eines Markts (GET /markets/{id})"""
+    """Schema zum Lesen eines Markts"""
     id: int
     title: str
     description: Optional[str]
     end_date: datetime
     status: str
     current_pool: float
+    yes_pool: float = 0.0
+    no_pool: float = 0.0
     odds_yes: float
     odds_no: float
     created_at: datetime
+    outcome: Optional[bool] = None
 
 
 class MarketDelete(SQLModel):
-    """Schema zum Löschen eines Markts (DELETE /admin/markets/{id})"""
+    """Schema zum Löschen eines Markts"""
     reason: str = Field(..., min_length=5, max_length=200)
     confirm_delete: bool = Field(...)
 
 
 class MarketResolve(SQLModel):
-    """Schema zum Auflösen eines Markts (POST /admin/resolve)"""
+    """Schema zum Auflösen eines Markts"""
     outcome: bool
     admin_note: Optional[str] = None
 
@@ -81,12 +106,12 @@ class MarketHistoryPoint(SQLModel):
 
 
 class MarketHistory(SQLModel):
-    """Historie der Quoten eines Markts (GET /markets/{market_id}/history)"""
+    """Historie der Quoten eines Markts"""
     market_id: int
     history: List[MarketHistoryPoint]
 
 
 class MarketList(SQLModel):
-    """Liste aktiver Märkte (GET /markets/active)"""
+    """Liste aktiver Märkte"""
     markets: List[MarketRead]
     total_count: int
