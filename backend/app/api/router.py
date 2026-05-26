@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import auth, bet, wallet, users, markets, admin
+from app.api.endpoints import auth, bet, wallet, users, markets
 from app.api import websocket
 
 api_router = APIRouter()
@@ -29,17 +29,12 @@ api_router.include_router(
     tags=["Benutzerverwaltung"],
 )
 
+# Leonhard: markets endpoints
 api_router.include_router(
     markets.router,
     prefix="/markets",
-    tags=["Märkte"],
+    tags=["Wetten & Quoten"],
 )
 
-api_router.include_router(
-    admin.router,
-    prefix="/admin",
-    tags=["Administration"],
-)
-
-# WebSocket endpoint for real-time updates
+# WebSocket endpoint for real-time updates (mounted under the API prefix)
 api_router.include_router(websocket.router)

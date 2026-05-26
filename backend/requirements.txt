@@ -1,10 +1,9 @@
-uvicorn[standard]
+uvicorn
 fastapi
-pydantic[email]
-email-validator
+typing
+pydantic
 sqlalchemy
 pymysql
 sqlmodel
 msal
 PyJWT
-cryptography

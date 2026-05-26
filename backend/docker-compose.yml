@@ -14,11 +14,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
     build:
@@ -27,8 +22,7 @@ services:
     container_name: htlkrems-predict-backend
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       PROJECT_NAME: ${PROJECT_NAME:-htlkrems-predict}
       API_V1_STR: ${API_V1_STR:-/api/v1}
@@ -37,14 +31,6 @@ services:
       MYSQL_USER: ${MYSQL_USER:-htlkrems}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-htlkrems123}
       MYSQL_DB: ${MYSQL_DB:-htlkrems_predict}
-      AZURE_TENANT_ID: ${AZURE_TENANT_ID:-common}
-      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID:-}
-      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET:-}
-      AZURE_REDIRECT_URI: ${AZURE_REDIRECT_URI:-http://localhost:3000/auth/callback}
-      ALLOWED_EMAIL_DOMAIN: ${ALLOWED_EMAIL_DOMAIN:-htlkrems.at}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
-      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
-      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-480}
     ports:
       - "8000:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
