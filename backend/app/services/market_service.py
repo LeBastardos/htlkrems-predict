@@ -1,54 +1,66 @@
-"""Service layer for market-related operations.
-
-The functions are intentionally lightweight placeholders for now, but their
-names and signatures are aligned with the FastAPI endpoints.
+"""
+Market-Service: Geschäftslogik für Märkte und deren Verwaltung.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
+from typing import List
 
-from app.schemas.market import Market, MarketCreate, MarketResolve
+from sqlmodel import Session
+
+import app.db.db_service as db_service
+from app.schemas.market import Market, MarketCreate, MarketRead, MarketResolve
 
 
-async def get_all_active_markets():
-    """Return all markets that are currently open."""
-    return []
+def get_active_markets(db: Session) -> List[Market]:
+    return db_service.get_all_active_markets(db)
 
 
-async def create_new_market(market_data: MarketCreate):
-    """Create a new market and return the serialized result."""
-    return Market(
-        title=market_data.title,
-        description=market_data.description,
-        end_date=market_data.end_date,
-        initial_odds_yes=market_data.initial_odds_yes,
-        initial_odds_no=market_data.initial_odds_no,
-        id=1,
-        status="OPEN",
-        current_pool=0.0,
-        odds_yes=market_data.initial_odds_yes,
-        odds_no=market_data.initial_odds_no,
-        created_at=datetime.now(),
+def create_market(db: Session, market_in: MarketCreate, created_by: int | None = None) -> Market:
+    market = Market(
+        title=market_in.title,
+        description=market_in.description,
+        end_date=market_in.end_date,
+        odds_yes=0.5,
+        odds_no=0.5,
+        created_by=created_by,
     )
+    return db_service.create_market(db, market)
 
 
-async def get_odds_history(market_id: int):
-    """Return the historical odds for a market."""
-    return {"market_id": market_id, "history": []}
+def get_market_history(db: Session, market_id: int) -> dict:
+    history = db_service.get_odds_history(db, market_id)
+    return {
+        "market_id": market_id,
+        "history": [
+            {
+                "timestamp": h.timestamp,
+                "odds_yes": h.odds_yes,
+                "odds_no": h.odds_no,
+                "pool_yes": h.pool_yes,
+                "pool_no": h.pool_no,
+            }
+            for h in history
+        ],
+    }
 
 
-async def process_market_payout(market_id: int, resolve_data: MarketResolve):
-    """Resolve a market and calculate payouts."""
-    return {"message": "Payout logic not implemented yet", "market_id": market_id, "outcome": resolve_data.outcome}
+def resolve_market(db: Session, resolve_data: MarketResolve) -> dict:
+    return db_service.payout_market(db, resolve_data.market_id, resolve_data.outcome)
 
 
-async def delete_market_entry(market_id: int, reason: str):
-    """Delete a market if it is still eligible for deletion."""
-    return {"status": "success", "market_id": market_id, "reason": reason}
+def delete_market(db: Session, market_id: int, reason: str) -> None:
+    from fastapi import HTTPException
 
+    market = db_service.get_market_by_id(db, market_id)
+    if market is None:
+        raise HTTPException(status_code=404, detail="Market not found")
 
-# Backward-compatible aliases for endpoint naming.
-get_active_markets = get_all_active_markets
-create_market = create_new_market
-get_market_history = get_odds_history
-resolve_market = process_market_payout
-delete_market = delete_market_entry
+    bets = db_service.get_bets_for_market(db, market_id)
+    if bets:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot delete a market that already has bets. Close it instead.",
+        )
+    db_service.delete_market(db, market_id)

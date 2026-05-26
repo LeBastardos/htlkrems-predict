@@ -1,473 +1,293 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="de" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HTL Krems Predict</title>
 
     <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+<!-- ─── Navbar ──────────────────────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <a class="navbar-brand fw-bold" href="#">🎯 HTL Predict</a>
 
-            <!-- Mode Button -->
-            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
-                Dark Mode
-            </button>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <!--Suchleiste-->
-            <div class="navbar-search">
-                <form>
-                    <label for="search">Search:</label>
-                    <input type="text" class="form-control" id="search" placeholder="Enter search term">
-                </form>
+        <!-- Search -->
+        <div class="navbar-search">
+            <input type="text" class="form-control form-control-sm" id="search" placeholder="Märkte suchen…">
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#" id="navHome">Märkte</a></li>
+                <li class="nav-item"><a class="nav-link" id="navAdmin" href="#" style="display:none">Admin</a></li>
+            </ul>
+        </div>
+
+        <!-- User area (right side) -->
+        <div class="auth-area d-flex align-items-center gap-2">
+            <!-- Logged out -->
+            <div id="authButtons">
+                <button type="button" class="btn btn-primary btn-sm" id="openLoginModal">Login</button>
+            </div>
+            <!-- Logged in -->
+            <div id="userArea" style="display:none" class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark" id="balanceBadge">0 Coins</span>
+                <button type="button" class="btn btn-outline-success btn-sm" id="claimDailyBtn">Daily Bonus</button>
+                <span class="text-light fw-semibold small" id="userNameLabel"></span>
+                <button type="button" class="btn btn-outline-light btn-sm" id="logoutBtn">Logout</button>
+            </div>
+            <!-- Dark mode -->
+            <button type="button" class="btn btn-outline-light btn-sm" id="ChangeModeButton">🌙</button>
+        </div>
+
+    </div>
+</nav>
+
+<!-- ─── Login Modal ──────────────────────────────────────────────────────────── -->
+<div class="auth-modal" id="loginModal">
+    <div class="auth-modal-content auth-animate">
+        <div class="auth-modal-header">
+            <h2>Login</h2>
+            <button type="button" class="auth-close" data-close-modal="loginModal">&times;</button>
+        </div>
+        <p class="text-muted small">Melde dich mit deiner HTL Krems E-Mail an.</p>
+        <div id="loginError" class="alert alert-danger d-none"></div>
+
+        <label for="loginEmail"><b>E-Mail</b></label>
+        <input type="email" id="loginEmail" placeholder="vorname.nachname@htlkrems.at">
+
+        <label for="loginName"><b>Name (optional)</b></label>
+        <input type="text" id="loginName" placeholder="Max Mustermann">
+
+        <div class="auth-modal-footer mt-3">
+            <button type="button" class="auth-cancel" data-close-modal="loginModal">Abbrechen</button>
+            <button type="button" class="auth-submit" id="loginSubmitBtn">Anmelden</button>
+        </div>
+        <p class="text-muted small mt-2">Hinweis: Nur @htlkrems.at Adressen erlaubt.</p>
+    </div>
+</div>
+
+<!-- ─── Create Market Modal (Admin) ─────────────────────────────────────────── -->
+<div class="auth-modal" id="createMarketModal">
+    <div class="auth-modal-content auth-animate">
+        <div class="auth-modal-header">
+            <h2>Neuen Markt erstellen</h2>
+            <button type="button" class="auth-close" data-close-modal="createMarketModal">&times;</button>
+        </div>
+        <div id="createMarketError" class="alert alert-danger d-none"></div>
+        <div id="createMarketSuccess" class="alert alert-success d-none"></div>
+
+        <label><b>Titel</b></label>
+        <input type="text" id="marketTitle" placeholder="z.B. Gewinnt die 3BHIT beim Sportfest?">
+
+        <label><b>Beschreibung (optional)</b></label>
+        <textarea id="marketDesc" rows="2" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--bs-border-color);background:var(--bs-body-bg);color:var(--bs-body-color);margin:8px 0 16px;"></textarea>
+
+        <label><b>Enddatum</b></label>
+        <input type="datetime-local" id="marketEndDate" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--bs-border-color);background:var(--bs-body-bg);color:var(--bs-body-color);margin:8px 0 16px;">
+
+        <div class="auth-actions">
+            <button type="button" class="auth-cancel" data-close-modal="createMarketModal">Abbrechen</button>
+            <button type="button" class="auth-submit" id="createMarketBtn">Erstellen</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Bet Modal ────────────────────────────────────────────────────────────── -->
+<div class="auth-modal" id="betModal">
+    <div class="auth-modal-content auth-animate">
+        <div class="auth-modal-header">
+            <h2 id="betModalTitle">Wette platzieren</h2>
+            <button type="button" class="auth-close" data-close-modal="betModal">&times;</button>
+        </div>
+        <div id="betError" class="alert alert-danger d-none"></div>
+        <div id="betSuccess" class="alert alert-success d-none"></div>
+
+        <p id="betMarketDesc" class="text-muted small"></p>
+
+        <div class="d-flex gap-3 mb-3">
+            <div class="flex-fill text-center p-2 border rounded" id="betOddsYes">
+                <div class="fw-bold text-success" id="betOddsYesVal">50%</div>
+                <div class="small text-muted">Ja (Wahrsch.)</div>
+            </div>
+            <div class="flex-fill text-center p-2 border rounded" id="betOddsNo">
+                <div class="fw-bold text-danger" id="betOddsNoVal">50%</div>
+                <div class="small text-muted">Nein (Wahrsch.)</div>
+            </div>
+        </div>
+
+        <label><b>Einsatz (Coins)</b></label>
+        <input type="number" id="betAmount" min="1" placeholder="z.B. 50" value="50">
+
+        <div class="d-flex gap-2 mt-2 mb-3">
+            <button type="button" class="btn btn-success flex-fill" id="betYesBtn">✅ Ja setzen</button>
+            <button type="button" class="btn btn-danger flex-fill" id="betNoBtn">❌ Nein setzen</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Resolve Market Modal (Admin) ────────────────────────────────────────── -->
+<div class="auth-modal" id="resolveModal">
+    <div class="auth-modal-content auth-animate">
+        <div class="auth-modal-header">
+            <h2>Markt auflösen</h2>
+            <button type="button" class="auth-close" data-close-modal="resolveModal">&times;</button>
+        </div>
+        <div id="resolveError" class="alert alert-danger d-none"></div>
+        <div id="resolveSuccess" class="alert alert-success d-none"></div>
+
+        <p id="resolveMarketTitle" class="fw-semibold"></p>
+
+        <label><b>Ergebnis</b></label>
+        <div class="d-flex gap-2 mt-2">
+            <button type="button" class="btn btn-success flex-fill" id="resolveYesBtn">✅ Ja hat gewonnen</button>
+            <button type="button" class="btn btn-danger flex-fill" id="resolveNoBtn">❌ Nein hat gewonnen</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Main Content ─────────────────────────────────────────────────────────── -->
+<div class="page-content">
+
+    <!-- Stats -->
+    <section class="stats-grid" id="statsGrid">
+        <article class="stat-card">
+            <span class="stat-icon stat-blue">🎯</span>
+            <div>
+                <p>Aktive Märkte</p>
+                <strong id="statActiveMarkets">–</strong>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-cyan">💰</span>
+            <div>
+                <p>Mein Kontostand</p>
+                <strong id="statBalance">–</strong>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-yellow">📊</span>
+            <div>
+                <p>Meine Wetten</p>
+                <strong id="statMyBets">–</strong>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-green">🏆</span>
+            <div>
+                <p>Platzierung</p>
+                <strong id="statRank">–</strong>
+            </div>
+        </article>
+    </section>
+
+    <!-- Main area: Markets + Sidebar -->
+    <section class="dashboard-main">
+
+        <!-- Markets panel -->
+        <div class="graph-overview">
+            <div class="panel-header">
+                <div>
+                    <h2>Aktive Märkte</h2>
+                    <span id="marketsSubtitle">Wähle einen Markt aus</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshMarketsBtn">↺ Aktualisieren</button>
+                    <button type="button" class="btn btn-sm btn-success" id="openCreateMarketBtn" style="display:none">+ Markt erstellen</button>
+                </div>
             </div>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Aktuell</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+            <!-- Markets list -->
+            <div id="marketsList">
+                <div class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Märkte werden geladen…
+                </div>
+            </div>
+
+            <!-- Market detail view -->
+            <div id="marketDetail" style="display:none">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="backToMarketsBtn">← Zurück</button>
+                    <h3 class="mb-0" id="detailTitle"></h3>
+                </div>
+                <p id="detailDesc" class="text-muted"></p>
+
+                <div class="d-flex gap-3 mb-3">
+                    <div class="flex-fill p-3 border rounded text-center">
+                        <div class="fw-bold text-success fs-4" id="detailOddsYes">50%</div>
+                        <div class="text-muted small">Ja Wahrscheinlichkeit</div>
+                        <div class="text-muted small" id="detailPoolYes">Pool: 0 Coins</div>
+                    </div>
+                    <div class="flex-fill p-3 border rounded text-center">
+                        <div class="fw-bold text-danger fs-4" id="detailOddsNo">50%</div>
+                        <div class="text-muted small">Nein Wahrscheinlichkeit</div>
+                        <div class="text-muted small" id="detailPoolNo">Pool: 0 Coins</div>
+                    </div>
+                    <div class="flex-fill p-3 border rounded text-center">
+                        <div class="fw-bold fs-4" id="detailPool">0</div>
+                        <div class="text-muted small">Gesamt Pool (Coins)</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mb-3">
+                    <span class="badge" id="detailStatus"></span>
+                    <span class="text-muted small" id="detailEndDate"></span>
+                </div>
+
+                <div id="detailBetArea">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" id="detailBetYesBtn">✅ Auf Ja wetten</button>
+                        <button type="button" class="btn btn-danger" id="detailBetNoBtn">❌ Auf Nein wetten</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-auto" id="detailResolveBtn" style="display:none">Markt auflösen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Ranking + Ongoing -->
+        <aside class="ongoing-trades-panel">
+            <section class="ranking-section">
+                <h2>🏆 Ranking</h2>
+                <ul class="ranking-list" id="rankingList">
+                    <li class="text-muted small">Wird geladen…</li>
                 </ul>
-            </div>
+            </section>
 
-            <div class="auth-area">
-                <!--Login/Signup-->
-                <div class="auth-buttons">
-                    <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
-                    <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+            <section class="ongoing-section">
+                <h2>📋 Meine Wetten</h2>
+                <ul class="ongoing-list" id="myBetsList">
+                    <li class="text-muted small">Einloggen um Wetten zu sehen</li>
+                </ul>
+            </section>
+        </aside>
 
-<!-- Login Modal Logik -->
-    <div class="auth-modal" id="loginModal">
-        <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
-            <div class="auth-modal-header">
-                <h2>Login</h2>
-                <button type="button" class="auth-close" data-close-modal="loginModal" title="Close Modal">&times;</button>
-            </div>
+    </section>
 
-            <label for="loginUsername"><b>Username</b></label>
-            <input type="text" id="loginUsername" placeholder="Enter Username" name="uname" required>
-
-            <label for="loginPassword"><b>Password</b></label>
-            <input type="password" id="loginPassword" placeholder="Enter Password" name="psw" required>
-
-            <button type="submit" class="auth-submit">Login</button>
-
-            <label class="auth-checkbox">
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
-
-            <div class="auth-modal-footer">
-                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
-                <span>Forgot <a href="#">password?</a></span>
-            </div>
-        </form>
-    </div>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-
-<!-- Signup Modal Logik -->
-    <div class="auth-modal" id="signupModal">
-        <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
-            <div class="auth-modal-header">
-                <h2>Sign Up</h2>
-                <button type="button" class="auth-close" data-close-modal="signupModal" title="Close Modal">&times;</button>
-            </div>
-
-            <label for="signupEmail"><b>Email</b></label>
-            <input type="text" id="signupEmail" placeholder="Enter Email" name="email" required>
-
-            <label for="signupPassword"><b>Password</b></label>
-            <input type="password" id="signupPassword" placeholder="Enter Password" name="psw" required>
-
-            <label for="signupPasswordRepeat"><b>Repeat Password</b></label>
-            <input type="password" id="signupPasswordRepeat" placeholder="Repeat Password" name="psw-repeat" required>
-
-            <label class="auth-checkbox">
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
-
-            <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
-
-            <div class="auth-actions">
-                <button type="button" class="auth-cancel" data-close-modal="signupModal">Cancel</button>
-                <button type="submit" class="auth-submit">Sign Up</button>
-            </div>
-        </form>
-    </div>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-    <div class="page-content">
-        <section class="stats-grid">
-            <article class="stat-card">
-                <span class="stat-icon stat-blue">UP</span>
-                <div>
-                    <p>Total Votes</p>
-                    <strong>2,500</strong>
-                    <small>+8% from last week</small>
-                </div>
-            </article>
-            <article class="stat-card">
-                <span class="stat-icon stat-cyan">LIVE</span>
-                <div>
-                    <p>Active Trades</p>
-                    <strong>123</strong>
-                    <small>+3 new today</small>
-                </div>
-            </article>
-            <article class="stat-card">
-                <span class="stat-icon stat-yellow">WIN</span>
-                <div>
-                    <p>Best Streak</p>
-                    <strong>14</strong>
-                    <small>top user this week</small>
-                </div>
-            </article>
-            <article class="stat-card">
-                <span class="stat-icon stat-green">EUR</span>
-                <div>
-                    <p>Total Volume</p>
-                    <strong>24,567</strong>
-                    <small>+11% from last week</small>
-                </div>
-            </article>
-        </section>
-
-        <section class="dashboard-main">
-            <div class="graph-overview">
-                <div class="panel-header">
-                    <div>
-                        <h2>Network Activities</h2>
-                        <span>Graph title sub-title</span>
-                    </div>
-                    <div class="date-filter">
-                        <button type="button">Start date</button>
-                        <button type="button">End date</button>
-                    </div>
-                </div>
-
-                <!-- Slideshow container -->
-                <div class="slideshow-container">
-
-            <!-- Full-width images with number and caption text -->
-            <div class="mySlides slide-fade">
-                <div class="numbertext">1 / 3</div>
-                <div class="slide-image">
-                    <img src="images/Download.png" alt="Testbild">
-                </div>
-
-                <div class="graph-vote-row">
-                    <span>Up</span>
-                    <h1 class="graph-title">Erster Graph</h1>
-                    <span>Down</span>
-                </div>
-
-                <div class="graph-details">
-                    <section class="graph-description">
-                        <h2>Beschreibung</h2>
-                        <p>Hier kommt die Beschreibung vom Graph hinein. Dieser Bereich nimmt ungefaehr zwei Drittel der Breite ein.</p>
-                    </section>
-
-                    <section class="latest-votes">
-                        <h2>Letzte Votes</h2>
-                        <p>Noch keine Votes vorhanden.</p>
-                        <p>Votes vom Leo bekommen!</p>
-                    </section>
-                </div>
-            </div>
-
-            <div class="mySlides slide-fade">
-                <div class="numbertext">2 / 3</div>
-                <div class="slide-image">
-                    <img src="images/Download.png" alt="Testbild">
-                </div>
-
-                <div class="graph-vote-row">
-                    <span>Up</span>
-                    <h1 class="graph-title">Zweiter Graph</h1>
-                    <span>Down</span>
-                </div>
-
-                <div class="graph-details">
-                    <section class="graph-description">
-                        <h2>Beschreibung</h2>
-                        <p>Beschreibung fuer den zweiten Graph. Auch dieser Text ist Teil der Slideshow.</p>
-                    </section>
-
-                    <section class="latest-votes">
-                        <h2>Letzte Votes</h2>
-                        <p>Vote 1: Up</p>
-                        <p>Votes vom Leo bekommen!</p>
-                    </section>
-                </div>
-            </div>
-
-            <div class="mySlides slide-fade">
-                <div class="numbertext">3 / 3</div>
-                <div class="slide-image">
-                    <img src="images/Download.png" alt="Testbild">
-                </div>
-
-                <div class="graph-vote-row">
-                    <span>Up</span>
-                    <h1 class="graph-title">Dritter Graph</h1>
-                    <span>Down</span>
-                </div>
-
-                <div class="graph-details">
-                    <section class="graph-description">
-                        <h2>Beschreibung</h2>
-                        <p>Beschreibung fuer den dritten Graph. Beim Weiterklicken wechselt jetzt der ganze Block.</p>
-                    </section>
-
-                    <section class="latest-votes">
-                        <h2>Letzte Votes</h2>
-                        <p>Vote 1: Down</p>
-                        <p>Votes vom Leo bekommen!</p>
-                    </section>
-                </div>
-            </div>
-        </div>
-
-        <!-- Next and previous buttons -->
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-
-        <!-- The dots/circles -->
-        <div class="slide-dots">
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-        </div>
-
-            </div>
-
-            <aside class="ongoing-trades-panel">
-                <section class="ranking-section">
-                    <h2>Ranking</h2>
-                    <ul class="ranking-list">
-                        <li><span>1. User A</span><strong>84%</strong></li>
-                        <li><span>2. User B</span><strong>79%</strong></li>
-                        <li><span>3. User C</span><strong>71%</strong></li>
-                    </ul>
-                </section>
-
-                <section class="ongoing-section">
-                    <h2>Ongoing Trades</h2>
-                    <ul class="ongoing-list">
-                        <li>
-                            <span>Graph A live</span>
-                            <div class="trade-progress"><span style="width: 82%"></span></div>
-                        </li>
-                        <li>
-                            <span>Graph B live</span>
-                            <div class="trade-progress"><span style="width: 64%"></span></div>
-                        </li>
-                        <li>
-                            <span>Graph C live</span>
-                            <div class="trade-progress"><span style="width: 45%"></span></div>
-                        </li>
-                        <li>
-                            <span>Graph D live</span>
-                            <div class="trade-progress"><span style="width: 72%"></span></div>
-                        </li>
-                    </ul>
-                </section>
-            </aside>
-        </section>
-
-    <div class="trades-area">
-        <div class="expired-trades-wrapper">
-            <div class="expired-trades-slider" data-trade-slider>
-                <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
-
-                <div class="trade-slide is-active">
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 24</span>
-                            <span>Nein: 11</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 18</span>
-                            <span>Nein: 17</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 31</span>
-                            <span>Nein: 9</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 12</span>
-                            <span>Nein: 20</span>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="trade-slide">
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 20</span>
-                            <span>Nein: 14</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 27</span>
-                            <span>Nein: 8</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 16</span>
-                            <span>Nein: 21</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 30</span>
-                            <span>Nein: 13</span>
-                        </div>
-                    </article>
-                </div>
-
-                <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
-            </div>
-
-            <div class="expired-trades-slider" data-trade-slider>
-                <button type="button" class="trade-arrow trade-prev" data-trade-direction="-1">&lt;</button>
-
-                <div class="trade-slide is-active">
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 14</span>
-                            <span>Nein: 22</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 25</span>
-                            <span>Nein: 15</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 19</span>
-                            <span>Nein: 19</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 28</span>
-                            <span>Nein: 10</span>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="trade-slide">
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 11</span>
-                            <span>Nein: 26</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 22</span>
-                            <span>Nein: 16</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 35</span>
-                            <span>Nein: 7</span>
-                        </div>
-                    </article>
-                    <article class="expired-trade-card">
-                        <div class="trade-graph-placeholder">
-                            <span>Graph Bild</span>
-                        </div>
-                        <div class="trade-result">
-                            <span>Ja: 17</span>
-                            <span>Nein: 24</span>
-                        </div>
-                    </article>
-                </div>
-
-                <button type="button" class="trade-arrow trade-next" data-trade-direction="1">&gt;</button>
-            </div>
-        </div>
-    </div>
+    <!-- Resolved/Historical trades -->
+    <div id="resolvedSection" style="display:none">
+        <h3 class="mt-4 mb-3">Abgeschlossene Märkte</h3>
+        <div id="resolvedList" class="resolved-grid"></div>
     </div>
 
-<footer>
-    
+</div>
+
+<footer class="text-center text-muted py-3 mt-4 border-top">
+    <small>HTL Krems Predict &copy; 2026 &mdash; Schulprojekt</small>
 </footer>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
