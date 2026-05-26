@@ -94,8 +94,7 @@ Damit ihr wisst, wie die JSON-Pakete aussehen müssen, hier die wichtigsten 3 Ob
   "name": "string",
   "email": "string",
   "balance": 1000,
-  "role": "user | trustee | admin",
-  "opt_out": false
+  "role": "user | trustee | admin"
 }
 ```
 
