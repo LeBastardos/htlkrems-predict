@@ -7,3 +7,4 @@ pymysql
 sqlmodel
 msal
 PyJWT
+email-validator

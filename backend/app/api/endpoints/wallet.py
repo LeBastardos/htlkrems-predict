@@ -19,5 +19,5 @@ async def claim_daily(user_id: int):
 
 @router.get("/history/{user_id}", response_model=WalletHistoryResponse)
 async def get_history(user_id: int):
-    # placeholder: no persistent history in the in-memory wallet
-    return WalletHistoryResponse(user_id=user_id, history=[])
+    history = await wallet_service.get_user_history(user_id)
+    return WalletHistoryResponse(user_id=user_id, history=history)

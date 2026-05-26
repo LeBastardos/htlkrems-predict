@@ -16,6 +16,7 @@ RUN pip install --upgrade pip \
     && pip install pymysql sqlalchemy
 
 COPY app ./app
+COPY seed_data.py ./
 
 EXPOSE 8000
 

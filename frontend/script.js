@@ -119,3 +119,48 @@ function showSlides() {
   slides[slideIndex-1].style.display = "block";
   setTimeout(showSlides, 2000); // Change image every 2 seconds
 } */
+
+// --- Dynamic data binding ---
+async function fetchActiveMarkets() {
+  try {
+    const res = await fetch('/api/v1/markets/active');
+    if (!res.ok) {
+      console.warn('Could not fetch markets:', res.statusText);
+      return [];
+    }
+    const markets = await res.json();
+    return markets;
+  } catch (err) {
+    console.warn('Error fetching markets', err);
+    return [];
+  }
+}
+
+function updateStatsWithMarkets(markets) {
+  const cards = document.querySelectorAll('.stat-card');
+  let totalVolume = 0;
+  markets.forEach(m => { totalVolume += Number(m.current_pool || 0); });
+
+  cards.forEach(card => {
+    const title = card.querySelector('p')?.textContent?.trim();
+    const strong = card.querySelector('strong');
+    if (!title || !strong) return;
+    if (title === 'Active Trades') {
+      strong.textContent = String(markets.length);
+    }
+    if (title === 'Total Volume') {
+      strong.textContent = String(Math.round(totalVolume));
+    }
+  });
+}
+
+async function refreshDashboard() {
+  const markets = await fetchActiveMarkets();
+  updateStatsWithMarkets(markets);
+}
+
+window.addEventListener('load', () => {
+  refreshDashboard();
+  // refresh every 30s
+  setInterval(refreshDashboard, 30000);
+});
