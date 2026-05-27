@@ -31,23 +31,26 @@
             <div class="navbar-search">
                 <form>
                     <label for="search">Search:</label>
-                    <input type="text" class="form-control" id="search" placeholder="Enter search term">
+                    <input type="text" class="form-control" id="search" placeholder="Search markets">
                 </form>
             </div>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Aktuell</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#live-markets">Aktuell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link d-none" id="adminLink" href="admin.html">Admin</a></li>
                 </ul>
             </div>
 
             <div class="auth-area">
                 <!--Login/Signup-->
                 <div class="auth-buttons">
+                    <span class="navbar-text text-light" id="authUserName"></span>
+                    <a class="btn btn-outline-light d-none" id="profileLink" href="profile.html">Profile</a>
+                    <button type="button" class="btn btn-outline-light d-none" id="logoutButton">Logout</button>
                     <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
-                    <button type="button" class="btn btn-secondary" id="openSignupModal">Signup</button>
                 </div>
             </div>
         </div>
@@ -56,60 +59,19 @@
 
 <!-- Login Modal Logik -->
     <div class="auth-modal" id="loginModal">
-        <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
+        <div class="auth-modal-content auth-animate">
             <div class="auth-modal-header">
-                <h2>Login</h2>
+                <h2>Sign in</h2>
                 <button type="button" class="auth-close" data-close-modal="loginModal" title="Close Modal">&times;</button>
             </div>
 
-            <label for="loginUsername"><b>Username</b></label>
-            <input type="text" id="loginUsername" placeholder="Enter Username" name="uname" required>
-
-            <label for="loginPassword"><b>Password</b></label>
-            <input type="password" id="loginPassword" placeholder="Enter Password" name="psw" required>
-
-            <button type="submit" class="auth-submit">Login</button>
-
-            <label class="auth-checkbox">
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
-
-            <div class="auth-modal-footer">
-                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
-                <span>Forgot <a href="#">password?</a></span>
-            </div>
-        </form>
-    </div>
-<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-
-<!-- Signup Modal Logik -->
-    <div class="auth-modal" id="signupModal">
-        <form class="auth-modal-content auth-animate" action="/action_page.php" method="post">
-            <div class="auth-modal-header">
-                <h2>Sign Up</h2>
-                <button type="button" class="auth-close" data-close-modal="signupModal" title="Close Modal">&times;</button>
-            </div>
-
-            <label for="signupEmail"><b>Email</b></label>
-            <input type="text" id="signupEmail" placeholder="Enter Email" name="email" required>
-
-            <label for="signupPassword"><b>Password</b></label>
-            <input type="password" id="signupPassword" placeholder="Enter Password" name="psw" required>
-
-            <label for="signupPasswordRepeat"><b>Repeat Password</b></label>
-            <input type="password" id="signupPasswordRepeat" placeholder="Repeat Password" name="psw-repeat" required>
-
-            <label class="auth-checkbox">
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
-
-            <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
+            <p>Sign in with your HTL Krems Microsoft account to place bets and view your profile.</p>
 
             <div class="auth-actions">
-                <button type="button" class="auth-cancel" data-close-modal="signupModal">Cancel</button>
-                <button type="submit" class="auth-submit">Sign Up</button>
+                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
+                <button type="button" class="auth-submit" id="microsoftLoginButton">Continue with Microsoft</button>
             </div>
-        </form>
+        </div>
     </div>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
     <div class="page-content">
@@ -152,8 +114,8 @@
             <div class="graph-overview">
                 <div class="panel-header">
                     <div>
-                        <h2>Network Activities</h2>
-                        <span>Graph title sub-title</span>
+                        <h2>Market activity</h2>
+                        <span>Live markets and odds updates</span>
                     </div>
                     <div class="dashboard-actions">
                         <div class="date-filter">
@@ -262,7 +224,7 @@
             </div>
 
             <aside class="ongoing-trades-panel">
-                <section class="ranking-section">
+                <section class="ranking-section" id="live-markets">
                     <h2>Live Markets</h2>
                     <ul class="ranking-list" id="liveMarketsList">
                         <li><span>1. User A</span><strong>84%</strong></li>
@@ -272,7 +234,7 @@
                 </section>
 
                 <section class="ongoing-section">
-                    <h2>Backend Feed</h2>
+                    <h2>Market feed</h2>
                     <ul class="ongoing-list" id="marketFeedList">
                         <li>
                             <span>Graph A live</span>

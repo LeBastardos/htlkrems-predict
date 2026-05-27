@@ -55,9 +55,13 @@ def validate_school_email(email: str) -> None:
 
 def exchange_microsoft_code(code: str, redirect_uri: str | None = None) -> MicrosoftLoginResult:
 	app = _build_confidential_client()
+	# Request only the permission we need from Microsoft Graph.
+	# MSAL treats 'openid', 'profile' and 'offline_access' as reserved and
+	# will add them automatically where required; passing them explicitly
+	# causes a ValueError. Use a resource scope like 'User.Read'.
 	result = app.acquire_token_by_authorization_code(
 		code=code,
-		scopes=["openid", "profile", "email", "offline_access", "User.Read"],
+		scopes=["User.Read"],
 		redirect_uri=redirect_uri or settings.AZURE_REDIRECT_URI,
 	)
 
@@ -77,7 +81,21 @@ def exchange_microsoft_code(code: str, redirect_uri: str | None = None) -> Micro
 	return MicrosoftLoginResult(profile=profile, claims=claims)
 
 
+def build_microsoft_authorization_url(redirect_uri: str | None = None, state: str | None = None) -> str:
+	app = _build_confidential_client()
+	# Only request the Microsoft Graph permission here; reserved scopes
+	# (openid/profile/offline_access) are handled by MSAL internally.
+	return app.get_authorization_request_url(
+		scopes=["User.Read"],
+		redirect_uri=redirect_uri or settings.AZURE_REDIRECT_URI,
+		state=state,
+		prompt="select_account",
+		response_mode="query",
+	)
+
+
 def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
+	admin_emails = {email.strip().lower() for email in settings.ADMIN_EMAILS.split(",") if email.strip()}
 	statement = select(User).where((User.email == profile.email) | (User.azure_oid == profile.azure_oid))
 	user = session.exec(statement).first()
 	if user is None:
@@ -87,6 +105,8 @@ def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
 			azure_oid=profile.azure_oid,
 			last_login_at=datetime.now(timezone.utc),
 		)
+		if profile.email in admin_emails:
+			user.role = "admin"
 		session.add(user)
 		session.commit()
 		session.refresh(user)
@@ -94,6 +114,8 @@ def get_or_create_user(session: Session, profile: MicrosoftProfile) -> User:
 
 	user.name = profile.name
 	user.azure_oid = profile.azure_oid
+	if profile.email in admin_emails:
+		user.role = "admin"
 	user.last_login_at = datetime.now(timezone.utc)
 	session.add(user)
 	session.commit()

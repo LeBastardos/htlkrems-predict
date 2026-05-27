@@ -46,6 +46,7 @@ Hinweis: API hat den Prefix `/api/v1` (z. B. `/api/v1/markets/active`). Einige E
 
 | Endpunkt | Methode | Beschreibung |
 | :--- | :--- | :--- |
+| `/api/v1/auth/login` | GET | Startet Microsoft OAuth (Redirect zur Microsoft Login-Seite) |
 | `/api/v1/auth/callback` | POST | Microsoft OAuth Callback → Tauscht Code für JWT (Platzhalter/zu implementieren) |
 | `/api/v1/user/me` | GET | Profil des angemeldeten Users (Name, Email, Balance, Role) |
 | `/api/v1/user/me/settings` | PATCH | Nutzer‑Einstellungen (z. B. Opt‑out) |
@@ -57,9 +58,14 @@ Hinweis: API hat den Prefix `/api/v1` (z. B. `/api/v1/markets/active`). Einige E
 | Endpunkt | Methode | Beschreibung |
 | :--- | :--- | :--- |
 | `/api/v1/bet/place` | POST | Platziert eine Wette: prüft Balance, zieht Coins ab, erstellt Bet (aktuell In‑Memory) |
+| `/api/v1/bet/me` | GET | Listet die eigenen Wetten des angemeldeten Users |
+| `/api/v1/bet/{bet_id}` | GET | Detailansicht einer Wette (nur Besitzer/Admin) |
 | `/api/v1/wallet/balance/{user_id}` | GET | Liefert aktuellen Kontostand (`{ "user_id":..., "balance": ... }`) |
+| `/api/v1/wallet/me` | GET | Liefert den Kontostand des angemeldeten Users |
 | `/api/v1/wallet/claim-daily/{user_id}` | POST | Beansprucht Daily Bonus (aktuell ohne Rate‑Limit) |
+| `/api/v1/wallet/me/claim-daily` | POST | Daily Bonus für den angemeldeten User |
 | `/api/v1/wallet/history/{user_id}` | GET | Transaktions‑History (Platzhalter, aktuell leer) |
+| `/api/v1/wallet/me/history` | GET | Transaktions‑History des angemeldeten Users |
 
 Wichtig: In einer produktiven Implementierung muss `place` atomar erfolgen: prüfe Balance → ziehe ab → schreibe Bet + Transaction.
 
@@ -70,6 +76,7 @@ Wichtig: In einer produktiven Implementierung muss `place` atomar erfolgen: prü
 | Endpunkt | Methode | Beschreibung |
 | :--- | :--- | :--- |
 | `/api/v1/markets/active` | GET | Liste aller offenen Märkte mit aktuellen Quoten |
+| `/api/v1/markets/{market_id}` | GET | Details zu einem bestimmten Markt |
 | `/api/v1/markets/{market_id}/history` | GET | Quoten‑Historie eines Marktes |
 | `/api/v1/markets/admin/create` | POST | Admin: neuen Markt anlegen |
 | `/api/v1/markets/admin/resolve` | POST | Admin: Markt auflösen (Input: outcome) → Payouts berechnen |

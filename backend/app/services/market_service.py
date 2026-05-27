@@ -37,6 +37,14 @@ async def create_market(market_data: MarketCreate) -> Market:
         return m
 
 
+async def get_market(market_id: int) -> Market:
+    with Session(engine) as session:
+        market = session.get(Market, market_id)
+        if market is None:
+            raise ValueError("Market not found")
+        return market
+
+
 async def get_market_history(market_id: int) -> MarketHistory:
     # For now return empty history; could be built from stored odds over time.
     return MarketHistory(market_id=market_id, history=[])
