@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - HTL Predict</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">HTL Predict</a>
+            <button type="button" class="theme-toggle" id="AdminModeButton" aria-label="Dark Mode aktivieren" title="Dark Mode aktivieren">
+                <span id="adminModeIcon" aria-hidden="true">☾</span>
+            </button>
+            <div class="navbar-nav">
+                <a class="nav-link" href="index.html">Zur Webseite</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="admin-page">
+        <section class="admin-login-panel" id="adminLoginPanel">
+            <h1>Admin Login</h1>
+            <form id="adminLoginForm">
+                <label for="adminUsername">Benutzer</label>
+                <input type="text" id="adminUsername" autocomplete="username" required>
+
+                <label for="adminPassword">Passwort</label>
+                <input type="password" id="adminPassword" autocomplete="current-password" required>
+
+                <button type="submit">Anmelden</button>
+                <p class="admin-message" id="adminLoginMessage"></p>
+            </form>
+        </section>
+
+        <section class="admin-dashboard is-hidden" id="adminDashboard">
+            <div class="admin-dashboard-header">
+                <div>
+                    <span>Admin Bereich</span>
+                    <h1>Website Verwaltung</h1>
+                </div>
+                <button type="button" id="adminLogoutButton">Logout</button>
+            </div>
+
+            <div class="admin-actions-grid">
+                <article class="admin-tool-card">
+                    <h2>Website zurücksetzen</h2>
+                    <p>Löscht Coins, Votes, Daily Bonus und lokale Testdaten im Browser.</p>
+                    <button type="button" class="danger-button" id="resetLocalStorageButton">LocalStorage löschen</button>
+                </article>
+
+                <article class="admin-tool-card">
+                    <h2>User Verwaltung</h2>
+                    <p>User koennen für den Frontend-Prototyp gekickt, gesperrt oder per Reset-Passwort wiederhergestellt werden.</p>
+                    <div class="admin-user-search">
+                        <label for="adminUserSearch">Username suchen</label>
+                        <input type="text" id="adminUserSearch" placeholder="z.B. leo">
+                    </div>
+                </article>
+            </div>
+
+            <section class="admin-users-panel">
+                <h2>Benutzer</h2>
+                <ul class="admin-user-list" id="adminUserList"></ul>
+            </section>
+
+            <p class="admin-message" id="adminActionMessage"></p>
+        </section>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>

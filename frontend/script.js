@@ -151,9 +151,11 @@ document.querySelectorAll(".market-topic-row span").forEach((topicChip) => {
   });
 });
 
-document.querySelectorAll(".prediction-card").forEach((predictionCard, marketIndex) => {
-  const predictionButtons = predictionCard.querySelectorAll(".prediction-buttons button");
-  const cardFooter = predictionCard.querySelector("footer");
+function bindPredictionCardEvents() {
+  document.querySelectorAll(".prediction-card").forEach((predictionCard, marketIndex) => {
+    const predictionButtons = predictionCard.querySelectorAll(".prediction-buttons button");
+    const cardFooter = predictionCard.querySelector("footer");
+    const marketKey = predictionCard.dataset.marketId || String(marketIndex);
 
   predictionButtons.forEach((predictionButton) => {
     predictionButton.addEventListener("click", () => {
@@ -168,7 +170,7 @@ document.querySelectorAll(".prediction-card").forEach((predictionCard, marketInd
       setCoinBalance(currentCoins - selectedStake);
       addPredictionVote(
         predictionCard,
-        marketIndex,
+        marketKey,
         predictionButton.classList.contains("buy-yes") ? "yes" : "no",
         selectedStake
       );
@@ -189,7 +191,8 @@ document.querySelectorAll(".prediction-card").forEach((predictionCard, marketInd
       showVoteToast(`Danke fuer die Abstimmung! ${selectedStake} Coins eingesetzt.`);
     });
   });
-});
+  });
+}
 
 const marketActionButton = document.querySelector(".market-action");
 
@@ -205,6 +208,7 @@ const searchInput = document.getElementById("search");
 const coinStakeSelect = document.getElementById("coinStake");
 const myVotesList = document.getElementById("myVotesList");
 const marketEmptyState = document.getElementById("marketEmptyState");
+const marketCardGrid = document.getElementById("marketCardGrid");
 const coinStorageKey = "htlPredictCoins";
 const coinDailyStorageKey = "htlPredictLastDailyBonus";
 const marketVoteStorageKey = "htlPredictMarketVotes";
@@ -213,6 +217,87 @@ let selectedMarketTopic = "all";
 let selectedMarketStatus = "all";
 let selectedSearchTerm = "";
 let toastTimeout;
+
+const mockMarkets = [
+  {
+    id: 1,
+    title: "Gibt es in der 3BHIT einen Nachtest?",
+    category: "Tests",
+    topic: "tests",
+    statuses: ["trend", "live", "liquid"],
+    icon: "Test",
+    iconClass: "",
+    yesVotes: 62,
+    noVotes: 38,
+    volume: "24h Vol. 12.4K",
+    stateLabel: "Live"
+  },
+  {
+    id: 2,
+    title: "Schafft die Klasse einen Schnitt unter 2,5?",
+    category: "Noten",
+    topic: "noten",
+    statuses: ["live", "ending"],
+    icon: "HTL",
+    iconClass: "prediction-icon-green",
+    yesVotes: 29,
+    noVotes: 71,
+    volume: "Vol. 8.9K",
+    stateLabel: "Endet Freitag"
+  },
+  {
+    id: 3,
+    title: "Kommt der Brandy puenktlich?",
+    category: "Lehrer",
+    topic: "lehrer",
+    statuses: ["trend", "ending"],
+    icon: "Lehrer",
+    iconClass: "prediction-icon-orange",
+    yesVotes: 41,
+    noVotes: 59,
+    volume: "Vol. 5.1K",
+    stateLabel: "Bald endend"
+  },
+  {
+    id: 4,
+    title: "Kommt diese Woche noch ein Klassenvorschlag?",
+    category: "Schueler",
+    topic: "schueler",
+    statuses: ["new", "live"],
+    icon: "3B",
+    iconClass: "prediction-icon-purple",
+    yesVotes: 55,
+    noVotes: 45,
+    volume: "Vol. 2.7K",
+    stateLabel: "Neu"
+  },
+  {
+    id: 5,
+    title: "Nutzen mehr als 50% der Klasse KI fuer die Hausuebung?",
+    category: "KI",
+    topic: "ki",
+    statuses: ["trend", "new"],
+    icon: "KI",
+    iconClass: "prediction-icon-blue",
+    yesVotes: 68,
+    noVotes: 32,
+    volume: "Vol. 6.2K",
+    stateLabel: "Trend"
+  },
+  {
+    id: 6,
+    title: "Faellt am Freitag eine Stunde aus?",
+    category: "Stundenplan",
+    topic: "stundenplan",
+    statuses: ["live", "liquid"],
+    icon: "Plan",
+    iconClass: "prediction-icon-red",
+    yesVotes: 47,
+    noVotes: 53,
+    volume: "Vol. 10.1K",
+    stateLabel: "Live"
+  }
+];
 
 function getTodayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -254,10 +339,10 @@ function addDailyCoins() {
   let coinBalance = getCoinBalance();
 
   if (lastDailyBonus !== todayKey) {
-    coinBalance += 10;
+    coinBalance += 20; // hier geändert
     localStorage.setItem(coinDailyStorageKey, todayKey);
     setCoinBalance(coinBalance);
-    showVoteToast("Daily Bonus: 10 Coins erhalten!");
+    showVoteToast("Daily Bonus: 20 Coins erhalten!"); // hier geändert
     return;
   }
 
@@ -265,9 +350,13 @@ function addDailyCoins() {
 }
 
 addDailyCoins();
-initPredictionVotes();
+loadMarkets().then((markets) => {
+  renderMarkets(markets);
+  bindPredictionCardEvents();
+  initPredictionVotes();
+  filterPredictionCards();
+});
 renderVoteHistory();
-filterPredictionCards();
 
 if (searchInput) {
   searchInput.closest("form")?.addEventListener("submit", (event) => {
@@ -278,6 +367,50 @@ if (searchInput) {
     selectedSearchTerm = searchInput.value.trim().toLowerCase();
     filterPredictionCards();
   });
+}
+
+async function loadMarkets() {
+  return mockMarkets;
+}
+
+function renderMarkets(markets) {
+  if (!marketCardGrid) {
+    return;
+  }
+
+  marketCardGrid.innerHTML = markets.map((market) => {
+    const iconClasses = ["prediction-icon", market.iconClass].filter(Boolean).join(" ");
+
+    return `
+      <article class="prediction-card" data-market-id="${market.id}" data-market-topic="${market.topic}" data-market-status="${market.statuses.join(" ")}">
+        <div class="prediction-card-top">
+          <div class="${iconClasses}">${market.icon}</div>
+          <div>
+            <p>${market.category}</p>
+            <h2>${market.title}</h2>
+          </div>
+        </div>
+        <div class="prediction-outcomes">
+          <div>
+            <span>Ja</span>
+            <strong>${market.yesVotes}%</strong>
+          </div>
+          <div>
+            <span>Nein</span>
+            <strong>${market.noVotes}%</strong>
+          </div>
+        </div>
+        <div class="prediction-buttons">
+          <button type="button" class="buy-yes">Ja kaufen</button>
+          <button type="button" class="buy-no">Nein kaufen</button>
+        </div>
+        <footer>
+          <span>${market.volume}</span>
+          <span>${market.stateLabel}</span>
+        </footer>
+      </article>
+    `;
+  }).join("");
 }
 
 function getStoredMarketVotes() {
@@ -299,14 +432,14 @@ function getDefaultMarketVotes(predictionCard) {
   };
 }
 
-function getMarketVotes(predictionCard, marketIndex) {
+function getMarketVotes(predictionCard, marketKey) {
   const storedVotes = getStoredMarketVotes();
-  return storedVotes[marketIndex] || getDefaultMarketVotes(predictionCard);
+  return storedVotes[marketKey] || getDefaultMarketVotes(predictionCard);
 }
 
-function saveMarketVotes(marketIndex, votes) {
+function saveMarketVotes(marketKey, votes) {
   const storedVotes = getStoredMarketVotes();
-  storedVotes[marketIndex] = votes;
+  storedVotes[marketKey] = votes;
   localStorage.setItem(marketVoteStorageKey, JSON.stringify(storedVotes));
 }
 
@@ -334,16 +467,17 @@ function renderMarketVotes(predictionCard, votes) {
   }
 }
 
-function addPredictionVote(predictionCard, marketIndex, selectedOutcome, selectedStake) {
-  const votes = getMarketVotes(predictionCard, marketIndex);
+function addPredictionVote(predictionCard, marketKey, selectedOutcome, selectedStake) {
+  const votes = getMarketVotes(predictionCard, marketKey);
   votes[selectedOutcome] += selectedStake;
-  saveMarketVotes(marketIndex, votes);
+  saveMarketVotes(marketKey, votes);
   renderMarketVotes(predictionCard, votes);
 }
 
 function initPredictionVotes() {
   document.querySelectorAll(".prediction-card").forEach((predictionCard, marketIndex) => {
-    renderMarketVotes(predictionCard, getMarketVotes(predictionCard, marketIndex));
+    const marketKey = predictionCard.dataset.marketId || String(marketIndex);
+    renderMarketVotes(predictionCard, getMarketVotes(predictionCard, marketKey));
   });
 }
 
