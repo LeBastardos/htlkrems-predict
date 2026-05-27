@@ -22,8 +22,8 @@
             </button>
 
             <!-- Mode Button -->
-            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
-                Dark Mode
+            <button type="button" class="theme-toggle" id="ChangeModeButton" aria-label="Dark Mode aktivieren" title="Dark Mode aktivieren">
+                <span id="modeIcon" aria-hidden="true">☾</span>
             </button>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
@@ -113,6 +113,12 @@
     </div>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
     <div class="page-content">
+        <aside class="coin-system" aria-label="Coin Punktesystem">
+            <span class="coin-label">Coins</span>
+            <strong><span id="coinBalance">0</span> Coins</strong>
+            <small>Daily Bonus: +10 Coins</small>
+        </aside>
+
         <section class="stats-grid">
             <article class="stat-card">
                 <span class="stat-icon stat-blue">UP</span>
@@ -148,6 +154,231 @@
             </article>
         </section>
 
+        <section class="market-discovery">
+            <div class="market-discovery-header">
+                <div>
+                    <span class="market-kicker">Prediction Markets</span>
+                    <h1>Ausgewählte Märkte</h1>
+                </div>
+                <div class="market-header-actions">
+                    <label class="stake-control" for="coinStake">
+                        Einsatz
+                        <select id="coinStake">
+                            <option value="1">1 Coin</option>
+                            <option value="5">5 Coins</option>
+                            <option value="10">10 Coins</option>
+                        </select>
+                    </label>
+                    <button type="button" class="market-action">Alle erkunden</button>
+                </div>
+            </div>
+
+            <div class="market-tabs" aria-label="Market filters">
+                <button type="button" class="is-selected" data-market-status="all">Alle</button>
+                <button type="button" data-market-status="trend">Trends</button>
+                <button type="button" data-market-status="live">Aktuell</button>
+                <button type="button" data-market-status="new">Neu</button>
+                <button type="button" data-market-status="liquid">Liquide</button>
+                <button type="button" data-market-status="ending">Bald endend</button>
+            </div>
+
+            <div class="market-topic-row">
+                <span class="is-selected" data-market-topic="all">Alle</span>
+                <span data-market-topic="noten">Noten</span>
+                <span data-market-topic="tests">Tests</span>
+                <span data-market-topic="lehrer">Lehrer</span>
+                <span data-market-topic="schueler">Schüler</span>
+                <span data-market-topic="ki">KI</span>
+                <span data-market-topic="stundenplan">Stundenplan</span>
+            </div>
+
+            <div class="market-card-grid">
+                <article class="prediction-card" data-market-topic="tests" data-market-status="trend live liquid">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon">Test</div>
+                        <div>
+                            <p>Tests</p>
+                            <h2>Gibt es in der 3BHIT einen Nachtest?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>62%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>38%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>24h Vol. 12.4K</span>
+                        <span>Live</span>
+                    </footer>
+                </article>
+
+                <article class="prediction-card" data-market-topic="noten" data-market-status="live ending">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon prediction-icon-green">HTL</div>
+                        <div>
+                            <p>Noten</p>
+                            <h2>Schafft die Klasse einen Schnitt unter 2,5?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>29%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>71%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>Vol. 8.9K</span>
+                        <span>Endet Freitag</span>
+                    </footer>
+                </article>
+
+                <article class="prediction-card" data-market-topic="lehrer" data-market-status="trend ending">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon prediction-icon-orange">Lehrer</div>
+                        <div>
+                            <p>Lehrer</p>
+                            <h2>Kommt der Brandy pünktlich?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>41%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>59%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>Vol. 5.1K</span>
+                        <span>Bald endend</span>
+                    </footer>
+                </article>
+
+                <article class="prediction-card" data-market-topic="schueler" data-market-status="new live">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon prediction-icon-purple">3B</div>
+                        <div>
+                            <p>Schüler</p>
+                            <h2>Kommt diese Woche noch ein Klassenvorschlag?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>55%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>45%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>Vol. 2.7K</span>
+                        <span>Neu</span>
+                    </footer>
+                </article>
+
+                <article class="prediction-card" data-market-topic="ki" data-market-status="trend new">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon prediction-icon-blue">KI</div>
+                        <div>
+                            <p>KI</p>
+                            <h2>Nutzen mehr als 50% der Klasse KI fuer die Hausuebung?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>68%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>32%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>Vol. 6.2K</span>
+                        <span>Trend</span>
+                    </footer>
+                </article>
+
+                <article class="prediction-card" data-market-topic="stundenplan" data-market-status="live liquid">
+                    <div class="prediction-card-top">
+                        <div class="prediction-icon prediction-icon-red">Plan</div>
+                        <div>
+                            <p>Stundenplan</p>
+                            <h2>Fällt am Freitag eine Stunde aus?</h2>
+                        </div>
+                    </div>
+                    <div class="prediction-outcomes">
+                        <div>
+                            <span>Ja</span>
+                            <strong>47%</strong>
+                        </div>
+                        <div>
+                            <span>Nein</span>
+                            <strong>53%</strong>
+                        </div>
+                    </div>
+                    <div class="prediction-buttons">
+                        <button type="button" class="buy-yes">Ja kaufen</button>
+                        <button type="button" class="buy-no">Nein kaufen</button>
+                    </div>
+                    <footer>
+                        <span>Vol. 10.1K</span>
+                        <span>Live</span>
+                    </footer>
+                </article>
+            </div>
+
+            <div class="market-empty-state" id="marketEmptyState">
+                Keine Markets gefunden.
+            </div>
+        </section>
+
+        <section class="my-votes-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Meine Votes</h2>
+                    <span>Deine letzten Abstimmungen</span>
+                </div>
+            </div>
+            <ul id="myVotesList" class="my-votes-list">
+                <li>Noch keine Votes vorhanden.</li>
+            </ul>
+        </section>
+
         <section class="dashboard-main">
             <div class="graph-overview">
                 <div class="panel-header">
@@ -172,9 +403,9 @@
                 </div>
 
                 <div class="graph-vote-row">
-                    <span>Up</span>
+                    <button type="button" class="vote-button vote-up">Up</button>
                     <h1 class="graph-title">Erster Graph</h1>
-                    <span>Down</span>
+                    <button type="button" class="vote-button vote-down">Down</button>
                 </div>
 
                 <div class="graph-details">
@@ -198,9 +429,9 @@
                 </div>
 
                 <div class="graph-vote-row">
-                    <span>Up</span>
+                    <button type="button" class="vote-button vote-up">Up</button>
                     <h1 class="graph-title">Zweiter Graph</h1>
-                    <span>Down</span>
+                    <button type="button" class="vote-button vote-down">Down</button>
                 </div>
 
                 <div class="graph-details">
@@ -224,9 +455,9 @@
                 </div>
 
                 <div class="graph-vote-row">
-                    <span>Up</span>
+                    <button type="button" class="vote-button vote-up">Up</button>
                     <h1 class="graph-title">Dritter Graph</h1>
-                    <span>Down</span>
+                    <button type="button" class="vote-button vote-down">Down</button>
                 </div>
 
                 <div class="graph-details">
@@ -467,6 +698,8 @@
 <footer>
     
 </footer>
+
+    <div class="vote-toast" id="voteToast" role="status" aria-live="polite"></div>
 
     <script src="script.js"></script>
 </body>
