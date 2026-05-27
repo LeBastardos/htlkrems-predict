@@ -1,9 +1,17 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="de" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - HTL Predict</title>
+=======
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTLkrems Predict · Admin</title>
+>>>>>>> 61398883d02585e9497b41d9aeb68313f9d30f73
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,16 +20,51 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
+<<<<<<< HEAD
             <a class="navbar-brand" href="index.html">HTL Predict</a>
             <button type="button" class="theme-toggle" id="AdminModeButton" aria-label="Dark Mode aktivieren" title="Dark Mode aktivieren">
                 <span id="adminModeIcon" aria-hidden="true">☾</span>
             </button>
             <div class="navbar-nav">
                 <a class="nav-link" href="index.html">Zur Webseite</a>
+=======
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
+                Dark Mode
+            </button>
+
+            <div class="navbar-search">
+                <form>
+                    <label for="search">Search:</label>
+                    <input type="text" class="form-control" id="search" placeholder="Search markets">
+                </form>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#live-markets">Aktuell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link d-none" id="adminLink" href="admin.html">Admin</a></li>
+                </ul>
+            </div>
+
+            <div class="auth-area">
+                <div class="auth-buttons">
+                    <span class="navbar-text text-light" id="authUserName"></span>
+                    <a class="btn btn-outline-light d-none" id="profileLink" href="profile.html">Profile</a>
+                    <button type="button" class="btn btn-outline-light d-none" id="logoutButton">Logout</button>
+                    <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
+                </div>
+>>>>>>> 61398883d02585e9497b41d9aeb68313f9d30f73
             </div>
         </div>
     </nav>
 
+<<<<<<< HEAD
     <main class="admin-page">
         <section class="admin-login-panel" id="adminLoginPanel">
             <h1>Admin Login</h1>
@@ -73,5 +116,117 @@
     </main>
 
     <script src="admin.js"></script>
+=======
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content auth-animate">
+            <div class="auth-modal-header">
+                <h2>Sign in</h2>
+                <button type="button" class="auth-close" data-close-modal="loginModal" title="Close Modal">&times;</button>
+            </div>
+
+            <p>Sign in with your HTL Krems Microsoft account to manage markets.</p>
+
+            <div class="auth-actions">
+                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
+                <button type="button" class="auth-submit" id="microsoftLoginButton">Continue with Microsoft</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content" id="adminPage">
+        <header class="page-header">
+            <div>
+                <h1>Admin Panel</h1>
+                <p>Create, resolve, and clean up markets.</p>
+            </div>
+            <span class="backend-badge" id="adminStatus">Checking access...</span>
+        </header>
+
+        <div class="market-grid">
+            <section class="market-card">
+                <h2>Active Markets</h2>
+                <ul class="profile-bets-list" id="adminMarketsList">
+                    <li>Loading markets...</li>
+                </ul>
+            </section>
+
+            <section class="market-card">
+                <h2>Create Market</h2>
+                <form id="adminCreateMarketForm" class="bet-form">
+                    <div>
+                        <label for="adminMarketTitle">Title</label>
+                        <input type="text" name="title" id="adminMarketTitle" placeholder="e.g. Sports day is on time" required>
+                    </div>
+                    <div>
+                        <label for="adminMarketDescription">Description</label>
+                        <textarea name="description" id="adminMarketDescription" rows="3" placeholder="Short market description"></textarea>
+                    </div>
+                    <div>
+                        <label for="adminMarketEndDate">End date</label>
+                        <input type="datetime-local" name="end_date" id="adminMarketEndDate" required>
+                    </div>
+                    <div>
+                        <label for="adminMarketOddsYes">Initial odds (Yes)</label>
+                        <input type="number" min="0" max="1" step="0.01" name="odds_yes" id="adminMarketOddsYes" value="0.55">
+                    </div>
+                    <div>
+                        <label for="adminMarketOddsNo">Initial odds (No)</label>
+                        <input type="number" min="0" max="1" step="0.01" name="odds_no" id="adminMarketOddsNo" value="0.45">
+                    </div>
+                    <button type="submit" class="btn btn-success">Create market</button>
+                </form>
+            </section>
+        </div>
+
+        <div class="market-grid mt-3">
+            <section class="market-card">
+                <h2>Resolve Market</h2>
+                <form id="adminResolveMarketForm" class="bet-form">
+                    <div>
+                        <label for="adminResolveMarketId">Market ID</label>
+                        <input type="number" min="1" name="market_id" id="adminResolveMarketId" placeholder="Market ID" required>
+                    </div>
+                    <div>
+                        <label for="adminResolveOutcome">Outcome</label>
+                        <select name="outcome" id="adminResolveOutcome">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="adminResolveNote">Admin note</label>
+                        <input type="text" name="admin_note" id="adminResolveNote" placeholder="Optional note">
+                    </div>
+                    <button type="submit" class="btn btn-warning">Resolve market</button>
+                </form>
+            </section>
+
+            <section class="market-card">
+                <h2>Delete Market</h2>
+                <form id="adminDeleteMarketForm" class="bet-form">
+                    <div>
+                        <label for="adminDeleteMarketId">Market ID</label>
+                        <input type="number" min="1" name="market_id" id="adminDeleteMarketId" placeholder="Market ID" required>
+                    </div>
+                    <div>
+                        <label for="adminDeleteReason">Reason</label>
+                        <input type="text" name="reason" id="adminDeleteReason" placeholder="Reason for deletion" required>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="confirm_delete" id="adminDeleteConfirm">
+                        <label class="form-check-label" for="adminDeleteConfirm">
+                            I understand this will remove the market
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Delete market</button>
+                </form>
+            </section>
+        </div>
+
+        <p class="form-status" id="adminFormStatus"></p>
+    </div>
+
+    <script src="script.js"></script>
+>>>>>>> 61398883d02585e9497b41d9aeb68313f9d30f73
 </body>
 </html>

@@ -1,31 +1,69 @@
-# backend/app/services/market_service.py
-from app.schemas.market import MarketCreate, MarketResolve
+from __future__ import annotations
+
 from datetime import datetime
-import app.db.db_service as db_service
+from typing import List
 
-# Diese Funktionen füllt Artorius
+from sqlmodel import Session, select
 
-async def get_all_active_markets():
-    """Hol hier die Märkte von Robin."""
-    # Vorläufiger Dummy für Jakob (Frontend)
-    return []
+from app.db.session import engine
+from app.schemas.market import Market, MarketCreate, MarketHistory, MarketHistoryPoint
+from app.schemas.bet import Bet
 
-async def create_new_market(market_data: MarketCreate):
-    """Speichere den neuen Markt in der DB."""
-    # Hier wird später das DB-Modell erstellt
-    return {**market_data.dict(), "id": 1, "status": "OPEN", "current_pool": 0, "odds_yes": 0.5, "odds_no": 0.5, "created_at": datetime.now()}
 
-async def get_odds_history(market_id: int):
-    """Ziehe die historischen Quoten aus der History-Tabelle."""
-    return {"market_id": market_id, "history": []}
+async def get_active_markets() -> List[Market]:
+    with Session(engine) as session:
+        stmt = select(Market).where(Market.status == "OPEN")
+        results = session.exec(stmt).all()
+        return results
 
-async def process_market_payout(market_id: int, resolve_data: MarketResolve):
-    """Hier kommt deine Kern-Logik aus AP 4 rein (Gewinnerpool / Gesamtpool)."""
-    # 1. Gewinner ermitteln
-    # 2. Payouts berechnen
-    # 3. Wallet-Updates triggern
-    return {"message": "Payout logic not implemented yet"}
 
-async def delete_market_entry(market_id: int, reason: str):
-    """Lösche den Markt nur, wenn noch keine Wetten existieren."""
-    return {"status": "success", "reason": reason}
+async def create_market(market_data: MarketCreate) -> Market:
+    with Session(engine) as session:
+        m = Market(
+            title=market_data.title,
+            description=market_data.description,
+            end_date=market_data.end_date,
+            initial_odds_yes=market_data.initial_odds_yes,
+            initial_odds_no=market_data.initial_odds_no,
+            status="OPEN",
+            current_pool=0.0,
+            odds_yes=market_data.initial_odds_yes,
+            odds_no=market_data.initial_odds_no,
+            created_at=datetime.utcnow(),
+        )
+        session.add(m)
+        session.commit()
+        session.refresh(m)
+        return m
+
+
+async def get_market(market_id: int) -> Market:
+    with Session(engine) as session:
+        market = session.get(Market, market_id)
+        if market is None:
+            raise ValueError("Market not found")
+        return market
+
+
+async def get_market_history(market_id: int) -> MarketHistory:
+    # For now return empty history; could be built from stored odds over time.
+    return MarketHistory(market_id=market_id, history=[])
+
+
+async def resolve_market(market_id: int, resolution) -> dict:
+    with Session(engine) as session:
+        m = session.get(Market, market_id)
+        if not m:
+            return {"error": "market not found"}
+        m.status = "RESOLVED"
+        session.add(m)
+        session.commit()
+        return {"market_id": market_id, "status": "resolved", "outcome": getattr(resolution, 'outcome', None)}
+
+
+async def delete_market(market_id: int, reason: str) -> None:
+    with Session(engine) as session:
+        m = session.get(Market, market_id)
+        if m:
+            session.delete(m)
+            session.commit()

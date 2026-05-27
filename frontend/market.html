@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTLkrems Predict · Market</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <button type="button" class="btn btn-outline-light" id="ChangeModeButton">
+                Dark Mode
+            </button>
+
+            <div class="navbar-search">
+                <form>
+                    <label for="search">Search:</label>
+                    <input type="text" class="form-control" id="search" placeholder="Search markets">
+                </form>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#live-markets">Aktuell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link d-none" id="adminLink" href="admin.html">Admin</a></li>
+                </ul>
+            </div>
+
+            <div class="auth-area">
+                <div class="auth-buttons">
+                    <span class="navbar-text text-light" id="authUserName"></span>
+                    <a class="btn btn-outline-light d-none" id="profileLink" href="profile.html">Profile</a>
+                    <button type="button" class="btn btn-outline-light d-none" id="logoutButton">Logout</button>
+                    <button type="button" class="btn btn-primary" id="openLoginModal">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content auth-animate">
+            <div class="auth-modal-header">
+                <h2>Sign in</h2>
+                <button type="button" class="auth-close" data-close-modal="loginModal" title="Close Modal">&times;</button>
+            </div>
+
+            <p>Sign in with your HTL Krems Microsoft account to place bets and view your profile.</p>
+
+            <div class="auth-actions">
+                <button type="button" class="auth-cancel" data-close-modal="loginModal">Cancel</button>
+                <button type="button" class="auth-submit" id="microsoftLoginButton">Continue with Microsoft</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content" id="marketPage">
+        <header class="page-header">
+            <div>
+                <h1 id="marketTitle">Loading market...</h1>
+                <p id="marketDescription">Fetching the latest details for this market.</p>
+            </div>
+            <span class="backend-badge" id="marketStatus">...</span>
+        </header>
+
+        <div class="market-grid">
+            <section class="market-card">
+                <h2>Market Snapshot</h2>
+                <dl class="profile-list">
+                    <div>
+                        <dt>Ends</dt>
+                        <dd id="marketEndDate">-</dd>
+                    </div>
+                    <div>
+                        <dt>Total Pool</dt>
+                        <dd id="marketPool">-</dd>
+                    </div>
+                    <div>
+                        <dt>Odds Yes</dt>
+                        <dd id="marketOddsYes">-</dd>
+                    </div>
+                    <div>
+                        <dt>Odds No</dt>
+                        <dd id="marketOddsNo">-</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="market-card">
+                <h2>Place a Bet</h2>
+                <form id="placeBetForm" class="bet-form">
+                    <div>
+                        <label for="betChoice">Choice</label>
+                        <select name="choice" id="betChoice" required>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="betAmount">Amount (Coins)</label>
+                        <input type="number" min="1" step="1" name="amount" id="betAmount" placeholder="e.g. 250" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="betFormSubmit">Place Bet</button>
+                </form>
+                <p class="form-status" id="betFormStatus"></p>
+            </section>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

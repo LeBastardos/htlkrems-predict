@@ -158,3 +158,34 @@ Commit:
 .) Projekttagebuch (Einzelperson)
 
 .) Projektorganisation
+
+
+## Quickstart (lokal mit Docker)
+
+1. Kopiere `backend/.env.example` nach `backend/.env` und passe Werte an.
+2. Im Projekt-Root starten:
+
+```bash
+docker compose -f backend/docker-compose.yml up --build
+```
+
+Der Backend-Server ist danach unter `http://localhost:8000` erreichbar;
+die API hat den Prefix `/api/v1` (z. B. `http://localhost:8000/api/v1/markets/active`).
+
+## Implementierter Stand (Kurz)
+
+- REST Endpoints (Platzhalter/erste Implementierung):
+    - `GET /api/v1/markets/active` — Liste aktiver Märkte
+    - `POST /api/v1/markets/admin/create` — Markt anlegen
+    - `POST /api/v1/wette/place` — Wette platzieren (In-Memory placeholder)
+    - `GET /api/v1/wallet/balance/{user_id}` — Balance abfragen
+    - `POST /api/v1/wallet/claim-daily/{user_id}` — Daily bonus (In-Memory placeholder)
+    - `GET /api/v1/wallet/history/{user_id}` — Transaktions‑History (leer, placeholder)
+
+- WebSocket:
+    - `ws://<host>:8000/api/v1/ws/updates` — Broadcasts für Markt‑Updates (siehe `backend/app/api/websocket.py`)
+
+- Wichtige Hinweise:
+    - `backend/app/schemas/market.py` wurde auf `SQLModel` migriert (DB+Schema).
+    - Wallet/Wette sind aktuell In‑Memory Platzhalter; persistente Speicherung ist noch offen.
+

@@ -10,12 +10,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential default-libmysqlclient-dev pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt ./
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt \
     && pip install pymysql sqlalchemy
 
-COPY app ./app
+COPY backend/app ./app
+COPY backend/seed_data.py ./
+COPY frontend ./frontend
 
 EXPOSE 8000
 

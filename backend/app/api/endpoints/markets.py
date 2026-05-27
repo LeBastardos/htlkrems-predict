@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List
 from app.schemas.market import MarketCreate, MarketRead, MarketDelete, MarketResolve, MarketHistory
-from app.services.market_service import market_service
+import app.services.market_service as market_service
+from app.core.auth import get_current_user
+from app.db.models import User
 
 router = APIRouter()
 
@@ -13,12 +15,22 @@ async def get_active_markets():
     """
     return await market_service.get_active_markets()
 
+
+@router.get("/{market_id}", response_model=MarketRead)
+async def get_market(market_id: int):
+    try:
+        return await market_service.get_market(market_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Market not found")
+
 @router.post("/admin/create", response_model=MarketRead, status_code=status.HTTP_201_CREATED)
-async def create_market(market_in: MarketCreate):
+async def create_market(market_in: MarketCreate, current_user: User = Depends(get_current_user)):
     """
     POST /admin/create
     Erstellt einen neuen Markt mit den angegebenen Daten.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required")
     return await market_service.create_market(market_in)
 
 @router.get("/{market_id}/history", response_model=MarketHistory)
@@ -30,18 +42,22 @@ async def get_market_history(market_id: int):
     return await market_service.get_market_history(market_id)
 
 @router.post("/admin/resolve", response_model=dict)
-async def resolve_market(market_id: int, resolution: MarketResolve):
+async def resolve_market(market_id: int, resolution: MarketResolve, current_user: User = Depends(get_current_user)):
     """
     POST /admin/resolve
     Löst einen Markt auf und gibt das Ergebnis zurück.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required")
     return await market_service.resolve_market(market_id, resolution)
 
 @router.delete("/admin/markets/{market_id}")
-async def delete_market(market_id: int, delete_info: MarketDelete):
+async def delete_market(market_id: int, delete_info: MarketDelete, current_user: User = Depends(get_current_user)):
     """
     DELETE /admin/markets/{market_id}
     Löscht einen Markt mit Angabe eines Grundes.
     """
-    await market_service.delete_market(market_id, delete_info)
+    if current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required")
+    await market_service.delete_market(market_id, delete_info.reason)
     return {"message": f"Markt {market_id} wurde gelöscht."}
