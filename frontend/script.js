@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const button = document.getElementById("ChangeModeButton");
 const modeIcon = document.getElementById("modeIcon");
 const themeStorageKey = "htlPredictTheme";
@@ -39,10 +38,6 @@ button.addEventListener("click", () => {
         // button.classList.add("btn-outline-light");
     }
 });
-=======
-const apiBase = window.location.origin && window.location.origin !== "null" ? window.location.origin : "http://localhost:8000";
-const wsBase = apiBase.replace(/^http/, "ws");
->>>>>>> 61398883d02585e9497b41d9aeb68313f9d30f73
 
 const modeButton = document.getElementById("ChangeModeButton");
 const loginModal = document.getElementById("loginModal");
@@ -1115,7 +1110,7 @@ document.querySelectorAll("[data-trade-slider]").forEach((slider) => {
   });
 });
 
-<<<<<<< HEAD
+
 document.querySelectorAll(".market-tabs button").forEach((marketTab) => {
   marketTab.addEventListener("click", () => {
     document.querySelectorAll(".market-tabs button").forEach((button) => {
@@ -1461,6 +1456,20 @@ function addPredictionVote(predictionCard, marketKey, selectedOutcome, selectedS
   votes[selectedOutcome] += selectedStake;
   saveMarketVotes(marketKey, votes);
   renderMarketVotes(predictionCard, votes);
+
+  // update user streak and top stats after casting a vote
+  try {
+    updateUserStreak(selectedOutcome);
+  } catch (err) {
+    // ignore if function not yet available
+    console.warn('updateUserStreak not available', err);
+  }
+
+  try {
+    updateTopStats();
+  } catch (err) {
+    console.warn('updateTopStats not available', err);
+  }
 }
 
 function initPredictionVotes() {
@@ -1538,51 +1547,73 @@ function renderVoteHistory() {
     `<li><strong>${vote.outcome}</strong><span>${vote.stake} Coins</span><span>${vote.title}</span><span>${vote.date}</span></li>`
   )).join("");
 }
-=======
-if (refreshMarketsButton) {
-  refreshMarketsButton.addEventListener("click", () => {
-    refreshDashboard();
+
+
+// --- Top-stats / streak helpers ---
+function computeTotalVotes() {
+  const stored = getStoredMarketVotes();
+  let total = 0;
+
+  // Add votes from defined mockMarkets (use defaults when no stored entry)
+  mockMarkets.forEach((m) => {
+    const k = String(m.id);
+    const v = stored[k] || { yes: m.yesVotes, no: m.noVotes };
+    total += (Number(v.yes) + Number(v.no));
   });
+
+  // Include any stored markets not present in mockMarkets
+  Object.keys(stored).forEach((k) => {
+    if (!mockMarkets.find((m) => String(m.id) === k)) {
+      const v = stored[k];
+      total += (Number(v.yes) + Number(v.no));
+    }
+  });
+
+  return total;
 }
 
-window.addEventListener("load", async () => {
-  updateAuthUi();
+function computeActiveTrades() {
+  return mockMarkets.filter((m) => Array.isArray(m.statuses) && m.statuses.includes("live")).length;
+}
 
-  if (authCallbackStatus) {
-    await handleAuthCallback();
-    return;
+function updateTopStats() {
+  const totalVotesEl = document.getElementById('totalVotesValue');
+  const activeTradesEl = document.getElementById('activeTradesValue');
+  const bestStreakEl = document.getElementById('bestStreakValue');
+  const totalVolumeEl = document.getElementById('totalVolumeValue');
+
+  const totalVotes = computeTotalVotes();
+
+  if (totalVotesEl) totalVotesEl.textContent = totalVotes.toLocaleString();
+  if (activeTradesEl) activeTradesEl.textContent = computeActiveTrades();
+  if (bestStreakEl) bestStreakEl.textContent = String(Number(localStorage.getItem('htlPredictBestStreak') || 0));
+  if (totalVolumeEl) totalVolumeEl.textContent = totalVotes.toLocaleString();
+}
+
+function updateUserStreak(selectedOutcome) {
+  if (!selectedOutcome) return;
+
+  const last = localStorage.getItem('htlPredictLastOutcome');
+  let current = Number(localStorage.getItem('htlPredictCurrentStreak') || 0);
+  let best = Number(localStorage.getItem('htlPredictBestStreak') || 0);
+
+  if (last && last === selectedOutcome) {
+    current += 1;
+  } else {
+    current = 1;
   }
 
-  if (profilePage) {
-    await loadProfilePage();
-  }
+  if (current > best) best = current;
 
-  if (marketPage) {
-    await loadMarketPage();
-  }
+  localStorage.setItem('htlPredictLastOutcome', selectedOutcome);
+  localStorage.setItem('htlPredictCurrentStreak', String(current));
+  localStorage.setItem('htlPredictBestStreak', String(best));
+}
 
-  if (betPage) {
-    await loadBetPage();
-  }
+// initialize top stats on load
+try {
+  updateTopStats();
+} catch (err) {
+  // ignore if DOM not ready
+}
 
-  if (adminPage) {
-    await loadAdminPage();
-  }
-
-  const hasDashboard = Boolean(apiStatus || liveMarketsList || marketFeedList);
-  if (hasDashboard) {
-    setApiStatus("Connecting to backend...");
-
-    if (await fetchHealth()) {
-      setApiStatus("Backend online", "ok");
-    } else {
-      setApiStatus("Backend offline", "warn");
-    }
-
-    await refreshDashboard();
-    connectMarketSocket();
-
-    setInterval(refreshDashboard, 30000);
-  }
-});
->>>>>>> 61398883d02585e9497b41d9aeb68313f9d30f73
