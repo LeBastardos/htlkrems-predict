@@ -102,13 +102,25 @@
 
             <section class="profile-card">
                 <h2>My Bets</h2>
-                <ul class="profile-bets-list" id="profileBetsList">
-                    <li>Loading bets...</li>
-                </ul>
+                <div id="profileBetsContainer">
+                  <ul class="profile-bets-list" id="profileBetsList">
+                      <li>Loading bets...</li>
+                  </ul>
+                  <button id="showMoreBets" class="btn btn-link d-none">Show more</button>
+                </div>
+            </section>
+
+            <section class="profile-card" id="notificationsCard">
+                <h2>Notifications</h2>
+                <div id="notificationsContainer">
+                    <ul class="notifications-list" id="notificationsList">
+                        <li>Loading notifications...</li>
+                    </ul>
+                </div>
             </section>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>

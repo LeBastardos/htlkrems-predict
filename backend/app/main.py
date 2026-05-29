@@ -1,4 +1,5 @@
 from pathlib import Path
+import asyncio
 
 import uvicorn
 from fastapi import FastAPI
@@ -29,8 +30,16 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
 @app.on_event("startup")
-def on_startup() -> None:
+async def on_startup() -> None:
     create_db_and_tables()
+    try:
+        # start background scheduler tasks for recurring markets and cleanup
+        import app.services.recurring_service as recurring_service
+        import app.services.cleanup_service as cleanup_service
+        asyncio.create_task(recurring_service.run_scheduler())
+        asyncio.create_task(cleanup_service.run_cleanup_loop())
+    except Exception:
+        pass
 
 @app.get("/health", tags=["Health"])
 async def health_check():

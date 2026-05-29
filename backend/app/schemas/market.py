@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from pydantic import field_validator
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List
 
 
@@ -15,8 +15,17 @@ class MarketBase(SQLModel):
     @field_validator('end_date', mode='after')
     @classmethod
     def end_date_has_to_be_future(cls, v):
-        if v <= datetime.now():
-            raise ValueError('Das Enddatum muss in der Zukunft liegen.')
+        # Support both offset-aware and naive datetimes:
+        # - If the incoming value has tzinfo (e.g. ISO string with Z),
+        #   compare in UTC.
+        # - If it's naive, compare against local naive now.
+        if getattr(v, "tzinfo", None) is not None:
+            now = datetime.now(timezone.utc)
+            if v.astimezone(timezone.utc) <= now:
+                raise ValueError('Das Enddatum muss in der Zukunft liegen.')
+        else:
+            if v <= datetime.now():
+                raise ValueError('Das Enddatum muss in der Zukunft liegen.')
         return v
 
 
@@ -43,8 +52,13 @@ class MarketCreate(SQLModel):
     @field_validator('end_date', mode='after')
     @classmethod
     def end_date_has_to_be_future(cls, v):
-        if v <= datetime.now():
-            raise ValueError('Das Enddatum muss in der Zukunft liegen.')
+        if getattr(v, "tzinfo", None) is not None:
+            now = datetime.now(timezone.utc)
+            if v.astimezone(timezone.utc) <= now:
+                raise ValueError('Das Enddatum muss in der Zukunft liegen.')
+        else:
+            if v <= datetime.now():
+                raise ValueError('Das Enddatum muss in der Zukunft liegen.')
         return v
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Tuple
 from sqlmodel import Session, select
 from fastapi import HTTPException, status
+from datetime import datetime, timezone
 
 from app.db.session import engine
 from app.schemas.bet import Bet, BetDetail, BetListItem, BetPlaceRequest, BetRead
@@ -15,6 +16,19 @@ async def place_bet(user_id: int, bet_in: BetPlaceRequest) -> BetRead:
         market = session.get(Market, bet_in.market_id)
         if market is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Market not found")
+        # Prevent placing bets after the market's end_date even if status still shows OPEN
+        end_date = getattr(market, "end_date", None)
+        if end_date is not None:
+            now = datetime.now(timezone.utc) if getattr(end_date, "tzinfo", None) is not None else datetime.now()
+            ended = end_date.astimezone(timezone.utc) <= now if getattr(end_date, "tzinfo", None) is not None else end_date <= now
+            if ended:
+                # mark market closed for future requests
+                if market.status == "OPEN":
+                    market.status = "CLOSED"
+                    session.add(market)
+                    session.commit()
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Market has ended and is closed for betting")
+
         if market.status != "OPEN":
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Market is not open for betting")
 

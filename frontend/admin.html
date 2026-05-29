@@ -81,6 +81,13 @@
             </section>
 
             <section class="market-card">
+                <h2>Users</h2>
+                <p>
+                  <a id="openUserAdmin" class="btn btn-outline-primary">Open user management</a>
+                </p>
+            </section>
+
+            <section class="market-card">
                 <h2>Create Market</h2>
                 <form id="adminCreateMarketForm" class="bet-form">
                     <div>
@@ -104,6 +111,79 @@
                         <input type="number" min="0" max="1" step="0.01" name="odds_no" id="adminMarketOddsNo" value="0.45">
                     </div>
                     <button type="submit" class="btn btn-success">Create market</button>
+                </form>
+            </section>
+        </div>
+
+        <div class="market-grid">
+            <section class="market-card">
+                <h2>Create Recurring Schedule</h2>
+                <form id="adminCreateRecurringForm" class="bet-form">
+                    <div>
+                        <label for="recurringTitle">Title</label>
+                        <input type="text" name="title" id="recurringTitle" placeholder="e.g. Daily trivia" required>
+                    </div>
+                    <div>
+                        <label for="recurringDescription">Description</label>
+                        <textarea name="description" id="recurringDescription" rows="2" placeholder="Optional description"></textarea>
+                    </div>
+                    <div>
+                        <label for="recurringFrequency">Frequency</label>
+                        <select name="frequency" id="recurringFrequency" class="form-select">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly (Mon–Sun)</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="recurringInterval">Every (interval)</label>
+                        <input type="number" min="1" name="interval" id="recurringInterval" value="1" required>
+                    </div>
+                    <div>
+                        <label for="recurringDurationUnits">Duration (units)</label>
+                        <input type="number" min="1" name="duration_units" id="recurringDurationUnits" value="1" required>
+                        <small class="form-text">Duration is measured in the chosen frequency unit (e.g. weekly duration=1 → 1 week).</small>
+                    </div>
+                    <div>
+                        <label for="recurringOccurrences">Occurrences (leave empty for infinite)</label>
+                        <input type="number" min="1" name="occurrences" id="recurringOccurrences" placeholder="e.g. 10">
+                    </div>
+                    <div>
+                        <label for="recurringStartDelay">Start delay (minutes)</label>
+                        <input type="number" min="0" name="start_delay_minutes" id="recurringStartDelay" value="0">
+                    </div>
+                    <div>
+                        <label for="recurringStartTime">Start time (HH:MM)</label>
+                        <input type="time" name="start_time" id="recurringStartTime">
+                        <small class="form-text">Optional: wall-clock time when each occurrence should start (e.g. 07:30).</small>
+                    </div>
+                    <div>
+                        <label for="recurringDurationMinutes">Duration (minutes)</label>
+                        <input type="number" min="1" name="duration_minutes" id="recurringDurationMinutes" placeholder="e.g. 1440 for 24h">
+                        <small class="form-text">Optional: explicit duration in minutes. Overrides duration units for end-time calculation.</small>
+                    </div>
+                    <div>
+                        <label for="recurringOddsYes">Initial odds (Yes)</label>
+                        <input type="number" min="0" max="1" step="0.01" name="initial_odds_yes" id="recurringOddsYes" value="0.5">
+                    </div>
+                    <div>
+                        <label for="recurringOddsNo">Initial odds (No)</label>
+                        <input type="number" min="0" max="1" step="0.01" name="initial_odds_no" id="recurringOddsNo" value="0.5">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="only_weekdays" id="recurringOnlyWeekdays">
+                        <label class="form-check-label" for="recurringOnlyWeekdays">Nur Werktage (Mo–Fr)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exclude_holidays" id="recurringExcludeHolidays">
+                        <label class="form-check-label" for="recurringExcludeHolidays">Feiertage ausschließen</label>
+                    </div>
+                    <div>
+                        <label for="recurringHolidayDates">Feiertage (Kommagetrennt, YYYY-MM-DD)</label>
+                        <input type="text" name="holiday_dates" id="recurringHolidayDates" placeholder="2026-12-25,2027-01-01">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create recurring schedule</button>
                 </form>
             </section>
         </div>
@@ -156,6 +236,6 @@
         <p class="form-status" id="adminFormStatus"></p>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
