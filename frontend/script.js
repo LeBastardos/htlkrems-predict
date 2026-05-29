@@ -472,6 +472,20 @@ function addPredictionVote(predictionCard, marketKey, selectedOutcome, selectedS
   votes[selectedOutcome] += selectedStake;
   saveMarketVotes(marketKey, votes);
   renderMarketVotes(predictionCard, votes);
+
+  // update user streak and top stats after casting a vote
+  try {
+    updateUserStreak(selectedOutcome);
+  } catch (err) {
+    // ignore if function not yet available
+    console.warn('updateUserStreak not available', err);
+  }
+
+  try {
+    updateTopStats();
+  } catch (err) {
+    console.warn('updateTopStats not available', err);
+  }
 }
 
 function initPredictionVotes() {
@@ -549,3 +563,72 @@ function renderVoteHistory() {
     `<li><strong>${vote.outcome}</strong><span>${vote.stake} Coins</span><span>${vote.title}</span><span>${vote.date}</span></li>`
   )).join("");
 }
+
+// --- Top-stats / streak helpers ---
+function computeTotalVotes() {
+  const stored = getStoredMarketVotes();
+  let total = 0;
+
+  // Add votes from defined mockMarkets (use defaults when no stored entry)
+  mockMarkets.forEach((m) => {
+    const k = String(m.id);
+    const v = stored[k] || { yes: m.yesVotes, no: m.noVotes };
+    total += (Number(v.yes) + Number(v.no));
+  });
+
+  // Include any stored markets not present in mockMarkets
+  Object.keys(stored).forEach((k) => {
+    if (!mockMarkets.find((m) => String(m.id) === k)) {
+      const v = stored[k];
+      total += (Number(v.yes) + Number(v.no));
+    }
+  });
+
+  return total;
+}
+
+function computeActiveTrades() {
+  return mockMarkets.filter((m) => Array.isArray(m.statuses) && m.statuses.includes("live")).length;
+}
+
+function updateTopStats() {
+  const totalVotesEl = document.getElementById('totalVotesValue');
+  const activeTradesEl = document.getElementById('activeTradesValue');
+  const bestStreakEl = document.getElementById('bestStreakValue');
+  const totalVolumeEl = document.getElementById('totalVolumeValue');
+
+  const totalVotes = computeTotalVotes();
+
+  if (totalVotesEl) totalVotesEl.textContent = totalVotes.toLocaleString();
+  if (activeTradesEl) activeTradesEl.textContent = computeActiveTrades();
+  if (bestStreakEl) bestStreakEl.textContent = String(Number(localStorage.getItem('htlPredictBestStreak') || 0));
+  if (totalVolumeEl) totalVolumeEl.textContent = totalVotes.toLocaleString();
+}
+
+function updateUserStreak(selectedOutcome) {
+  if (!selectedOutcome) return;
+
+  const last = localStorage.getItem('htlPredictLastOutcome');
+  let current = Number(localStorage.getItem('htlPredictCurrentStreak') || 0);
+  let best = Number(localStorage.getItem('htlPredictBestStreak') || 0);
+
+  if (last && last === selectedOutcome) {
+    current += 1;
+  } else {
+    current = 1;
+  }
+
+  if (current > best) best = current;
+
+  localStorage.setItem('htlPredictLastOutcome', selectedOutcome);
+  localStorage.setItem('htlPredictCurrentStreak', String(current));
+  localStorage.setItem('htlPredictBestStreak', String(best));
+}
+
+// initialize top stats on load
+try {
+  updateTopStats();
+} catch (err) {
+  // ignore if DOM not ready
+}
+

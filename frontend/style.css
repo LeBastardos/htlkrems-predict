@@ -218,7 +218,7 @@ body {
 
 .page-content {
   margin: 24px auto;
-  max-width: 1180px;
+  max-width: 1540px;
   padding: 0 16px;
   position: relative;
   width: 100%;
@@ -288,7 +288,10 @@ body {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 16px;
+  max-width: 1180px;
 }
 
 .stat-card {
@@ -344,12 +347,20 @@ body {
   margin-top: 6px;
 }
 
+.market-layout {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1180px) minmax(260px, 320px);
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
 .market-discovery {
   background: var(--bs-body-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(16, 31, 49, 0.08);
-  margin-bottom: 16px;
   padding: 18px;
 }
 
@@ -423,6 +434,12 @@ body {
   font-weight: 800;
   min-height: 28px;
   padding: 2px 8px;
+}
+
+[data-bs-theme="dark"] .stake-control select {
+  background: #1a2430;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
 }
 
 [data-bs-theme="dark"] .market-action {
@@ -660,8 +677,9 @@ body {
   border: 1px solid var(--bs-border-color);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(16, 31, 49, 0.08);
-  margin-bottom: 16px;
   padding: 18px;
+  position: sticky;
+  top: 16px;
 }
 
 .my-votes-list {
@@ -858,7 +876,10 @@ body {
   display: grid;
   gap: 16px;
   grid-template-columns: minmax(0, 2.2fr) minmax(240px, 0.8fr);
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 16px;
+  max-width: 1540px;
 }
 
 .graph-overview {
@@ -1118,6 +1139,9 @@ body {
 }
 
 .trades-area {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1180px;
   width: 100%;
 }
 
@@ -1327,8 +1351,16 @@ body {
 }
 
 @media screen and (max-width: 900px) {
+  .market-layout {
+    grid-template-columns: 1fr;
+  }
+
   .market-card-grid {
     grid-template-columns: 1fr;
+  }
+
+  .my-votes-panel {
+    position: static;
   }
 
   .admin-actions-grid {
